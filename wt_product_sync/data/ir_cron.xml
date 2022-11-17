@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.cron" id="product_sync_cron">
+            <field name="name">Load Products: Product Sync crons</field>
+            <field name="model_id" ref="model_product_sync"/>
+            <field name="user_id" ref="base.user_admin" />
+            <field name="state">code</field>
+            <field name='active'>True</field>
+            <field name="code">model.product_sync_crons()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+        </record>
+    </data>
+</odoo>
+
+
+<!-- <?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record forcecreate="True" id="product_sync_cron" model="ir.cron">
+            <field name="name">Load Products: Product Sync crons</field>
+            <field name="model_id" ref="model_product_sync"/>
+            <field name="active" eval="True" />
+            <field name="user_id" ref="base.user_root" />
+            <field name="state">code</field>
+            <field name="code">model.product_sync_crons()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+
+            <field name="doall" eval="False" />
+        </record>
+    </data>
+</odoo> -->
