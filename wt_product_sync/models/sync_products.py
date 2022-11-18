@@ -241,20 +241,14 @@ class ProductSync(models.Model):
                     "standard_price": varient_rec.get("standard_price"),
                     "volume": varient_rec.get("volume"),
                     "weight": varient_rec.get("weight"),
-                    "description": self.convert_html_to_text(
-                        varient_rec.get("description", "")
-                    ),
+                    "description": varient_rec.get("description", ""),
                     "volume_uom_name": varient_rec.get("volume_uom_name"),
                     "weight_uom_name": varient_rec.get("weight_uom_name"),
-                    "image_variant_1920": varient_rec.get(
-                        "image_variant_1920"
-                    ),
-                    "description_sale": self.convert_html_to_text(
-                        db_product.get("description_sale", "")
-                    ),
-                    "description_pickingin": self.convert_html_to_text(
-                        db_product.get("description_pickingin", "")
-                    ),
+                    "image_variant_1920": varient_rec.get("image_variant_1920"),
+                    "description_sale": db_product.get("description_sale", ""),
+                    "description_purchase": db_product.get("description_purchase"),
+                    "description_pickingin": db_product.get("description_pickingin"),
+                    "description_pickingout": db_product.get("description_pickingout"),
                     "db_id" : varient_rec.get("id"),
                     "store_id": self.id
                 }
@@ -359,6 +353,7 @@ class ProductSync(models.Model):
         public_categories = []
         # compatible_ids = []
 
+
         for product in products:
             if product.get('taxes_id'):
                 tax_ids = tax_ids + product.get('taxes_id')
@@ -441,10 +436,6 @@ class ProductSync(models.Model):
             if product.get('public_categ_ids'):
                 public_categ_ids = list(map(lambda x: mapped_public_categories.get(x), product.get('public_categ_ids')))
 
-            # compatible_ids = []
-            # if product.get('compatible_ids'):
-            #     compatible_ids = list(map(lambda x: mapped_compatible_ids.get(x), product.get('compatible_ids')))
-
 
             if uom_id or uom_po_id:
                 product_vals = {'uom_id': uom_id, 'uom_po_id': uom_po_id}
@@ -460,14 +451,18 @@ class ProductSync(models.Model):
                                 "volume": product.get("volume"),
                                 "volume_uom_name": product.get("volume_uom_name"),
                                 "weight": product.get("weight"),
+                                "website_description": product.get("website_description"),
                                 "weight_uom_name": product.get("weight_uom_name"),
                                 "uom_name": product.get("uom_name"),
                                 "image_1920": product.get("image_1920"),
                                 "is_published": product.get('is_published', False),
                                 # "l10n_in_hsn_code": product.get("l10n_in_hsn_code"),
                                 # "l10n_in_hsn_description": product.get("l10n_in_hsn_description"),
-                                # "description_sale": self.convert_html_to_text(product.get("description_sale", "")),
-                                # "description_pickingin": self.convert_html_to_text(product.get("description_picking", "")),
+                                "description_sale": product.get('description_sale'),
+                                "description_purchase": product.get("description_purchase"),
+                                # "hs_code": product.get("hs_code"),
+                                "description_pickingin": product.get("description_picking"),
+                                "description_pickingout": product.get("description_pickingout"),
                                 "categ_id": category_id,
                                 'purchase_method': product.get('purchase_method'),
                                 'website_sequence': product.get('website_sequence'),
@@ -479,7 +474,6 @@ class ProductSync(models.Model):
                                 "db_id": product['id'],
                                 "store_id": self.id,
                                 # 'compatible_ids': [(6, 0, compatible_ids)] if compatible_ids else [],
-                                "description_sale": product.get('description_sale'),
                             })
 
             product_id = product_obj.sudo().search([('db_id', '=', product['id']), ('store_id', '=', self.id), ('active', 'in', [True, False])])

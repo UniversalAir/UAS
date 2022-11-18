@@ -27,6 +27,7 @@ class AccountTax(models.Model):
 			'amount': tax.get('amount'),
 			'country_id': country.id if country else False,
 			'db_id': tax.get('id'),
+			'country_id': self.env.company.country_id.id,
 			'instance_id': store.id,
 			# 'company_id': store.company_id.id
 			}
