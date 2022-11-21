@@ -33,7 +33,7 @@ class MrpBOM(models.Model):
 
             mapped_uom_ids = {}
             if uom_ids:
-                mapped_uom_ids = UomUom.set_uom_to_odoo(list(set(uom_ids)), self)
+                mapped_uom_ids = UomUom.set_uom_to_odoo(list(set(uom_ids)), store)
 
             mapped_tmpl_attribute_value_ids = {}
             if tmpl_attribute_value_ids:
