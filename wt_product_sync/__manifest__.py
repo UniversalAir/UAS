@@ -12,7 +12,7 @@
     "author": "Warlock Technologies Pvt Ltd.",
     "website": "http://warlocktechnologies.com",
     "support": "info@warlocktechnologies.com",
-    "depends": ["stock", "sale_management", "purchase", "website", "website_sale",],
+    "depends": ["stock", "sale_management", "purchase", "website", "website_sale", "mrp"],
     "data": [
         "data/ir_cron.xml",
         "security/ir.model.access.csv",

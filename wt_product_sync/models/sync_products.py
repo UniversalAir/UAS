@@ -51,8 +51,10 @@ class ProductSync(models.Model):
     last_synced_product_id = fields.Integer(default=0)
     company_id = fields.Many2one('res.company')
     last_product_tmpl_import_history = fields.Datetime()
+    last_bom_import_history = fields.Datetime()
 
     count = fields.Integer(default=0)
+    bom_count = fields.Integer(default=0)
 
     def display_message(self, message):
         if self._context.get("manual"):
@@ -314,6 +316,36 @@ class ProductSync(models.Model):
             mapped_dict[rec.get('id')] = category.id
         return mapped_dict
 
+    def action_bom_sync(self):
+        mrp_bom = self.env['mrp.bom']
+        count = self.bom_count
+        write_date = self.last_bom_import_history
+        if not self.last_bom_import_history:
+            write_date = str((datetime.datetime.now() - relativedelta(years=1000)).date())
+        while True:
+            boms = self.established_connection('mrp.bom', 'search_read', [['write_date', '>', write_date], ['id', '>', count], ['active', 'in', [True, False]]], {'limit': 100, 'order':'id'})
+            if boms:
+                mrp_bom.set_bom_to_odoo(boms, self)
+                count = int(boms[-1]['id'])
+                self._cr.commit()
+            else:
+                self.bom_count = 0
+                break
+
+    def action_product_template_attribute_value_sync(self, ids):
+        records = self.established_connection('product.template.attribute.value', 'search_read', [['id', 'in', ids], ['active', 'in', [True, False]]], {'order':'id'})
+        return records
+
+
+    def action_bom_line_sync(self, line_ids):
+        mrp_bom = self.env['mrp.bom']
+        count = self.bom_count
+        # while True:
+        bom_lines = self.established_connection('mrp.bom.line', 'search_read', [['id', 'in', line_ids], ['active', 'in', [True, False]]], {'order':'id'})
+        return bom_lines
+            # products = self.established_connection('product.template', 'search_read', [['id', '=', 35], ['active', 'in', [True, False]]], {'limit': 100, 'order':'id'})
+
+
     def action_product_sync(self):
         count = self.count
         write_date = self.last_product_tmpl_import_history
@@ -373,27 +405,12 @@ class ProductSync(models.Model):
             if product.get('public_categ_ids'):
                 public_categories += product.get('public_categ_ids')
 
-            # if product.get('compatible_ids'):
-            #     compatible_ids += product.get('compatible_ids')
-
-
         if tax_ids:
             AccountTax.set_taxes_to_odoo(list(set(tax_ids)), self)
         if supplier_taxes_id:
             AccountTax.set_taxes_to_odoo(list(set(supplier_taxes_id)), self)
         if tmpl_images:
             ProductImage.set_images_to_odoo(list(set(tmpl_images)), self)
-
-        # mapped_compatible_ids = {}
-        # if compatible_ids:
-        #     records = self.established_connection('compatible.compatible', 'search_read', [['id', 'in', compatible_ids]], {'order':'id Asc'})
-        #     compantible_compatible = self.env['compatible.compatible']
-        #     for rec in records:
-        #         compantible_obj = compantible_compatible.search([('name', '=', rec.get('name'))])
-        #         if not compantible_obj:
-        #             compantible_obj = compantible_compatible.create({'name': rec.get('name')})
-
-        #         mapped_compatible_ids[rec.get('id')] = compantible_obj.id
 
         mapped_public_categories = {}
         if public_categories:
@@ -414,13 +431,10 @@ class ProductSync(models.Model):
                 category_id = self.get_product_category(product["categ_id"]).id
 
             taxes = []
-            # print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",product.get('taxes_id'))
             if product.get('taxes_id'):
                 taxes = AccountTax.search([('db_id', 'in', product.get('taxes_id')), ('instance_id', '=', self.id)])
 
             supplier_taxes = []
-            # print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",product.get('supplier_taxes_id'))
-            
             if product.get('supplier_taxes_id'):
                 taxes = AccountTax.search([('db_id', 'in', product.get('supplier_taxes_id')), ('instance_id', '=', self.id)])
 

@@ -11,6 +11,10 @@
                     <button name="action_product_pricelist_sync" 
                         string="Pricelist Sync" type="object" 
                         class="btn-primary" context="{'manual':True}"/>
+
+                    <button name="action_bom_sync" 
+                        string="Bill Of Material" type="object" 
+                        class="btn-primary" context="{'manual':True}"/>
 <!-- 
                     <button name="sync_res_company" string="Sync Company" type="object" class="btn-primary" context="{'manual':True}"/> -->
 
