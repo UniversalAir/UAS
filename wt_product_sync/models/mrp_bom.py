@@ -47,7 +47,7 @@ class MrpBOM(models.Model):
 
             lines = []
             for line in bom_lines:
-                vrnt = product_product.search([('db_id', '=', line.get('product_id')), ('store_id', '=', store.id), ('active', 'in', [True, False])])
+                vrnt = product_product.search([('db_id', '=', line.get('product_id')[0]), ('store_id', '=', store.id), ('active', 'in', [True, False])])
                 uom_id = mapped_uom_ids[line.get('product_uom_id')[0]]
 
                 prdt_tmpl_attr_val_id = False
@@ -67,7 +67,7 @@ class MrpBOM(models.Model):
                 else:
                     line.append((0, 0, vals))
 
-            prdt_tmpl = product_template.search([('db_id', '=', rec.get('product_tmpl_id')), ('store_id', '=', store.id), ('active', 'in', [True, False])])
+            prdt_tmpl = product_template.search([('db_id', '=', rec.get('product_tmpl_id')[0]), ('store_id', '=', store.id), ('active', 'in', [True, False])])
             vrnt = product_product.search([('db_id', '=', rec.get('product_id')), ('store_id', '=', store.id), ('active', 'in', [True, False])])
             vals = {'product_tmpl_id': prdt_tmpl.id, 
             'product_id': vrnt.id,
