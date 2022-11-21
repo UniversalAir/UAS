@@ -68,9 +68,11 @@ class MrpBOM(models.Model):
                     lines.append((0, 0, vals))
 
             prdt_tmpl = product_template.search([('db_id', '=', rec.get('product_tmpl_id')[0]), ('store_id', '=', store.id), ('active', 'in', [True, False])])
-            vrnt = product_product.search([('db_id', '=', rec.get('product_id')[0]), ('store_id', '=', store.id), ('active', 'in', [True, False])])
+            vrnt = False
+            if rec.get('product_id'):
+                vrnt = product_product.search([('db_id', '=', rec.get('product_id')[0]), ('store_id', '=', store.id), ('active', 'in', [True, False])])
             vals = {'product_tmpl_id': prdt_tmpl.id, 
-            'product_id': vrnt.id,
+            'product_id': vrnt.id if vrnt else vrnt,
             'product_qty': rec.get('product_qty'),
             'code': rec.get('code'),
             'type': rec.get('type'),
