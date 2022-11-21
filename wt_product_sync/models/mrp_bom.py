@@ -19,7 +19,7 @@ class MrpBOM(models.Model):
         product_template = self.env['product.template']
         product_template_attribute_value = self.env['product.template.attribute.value']
         product_attribute_value = self.env['product.attribute.value']
-        product_attribute = self.env['product.atribute']
+        product_attribute = self.env['product.attribute']
 
         for rec in records:
             bom_lines = store.action_bom_line_sync(rec.get('bom_line_ids'))
