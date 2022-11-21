@@ -48,7 +48,7 @@ class MrpBOM(models.Model):
             lines = []
             for line in bom_lines:
                 vrnt = product_product.search([('db_id', '=', line.get('product_id')[0]), ('store_id', '=', store.id), ('active', 'in', [True, False])])
-                uom_id = mapped_uom_ids[line.get('product_uom_id')[0]]
+                uom_id = mapped_uom_ids.get(line.get('product_uom_id')[0], False)
 
                 prdt_tmpl_attr_val_id = False
                 if line.get('bom_product_template_attribute_value_ids'):
@@ -61,7 +61,7 @@ class MrpBOM(models.Model):
                 'db_id': line.get('id'),
                 'instance_id': store.id}
 
-                bom_line = mrp_bom_line.search([('db_id', '=', line.get('id')), ('instance_id', '=', store.id), ('active', 'in', [True, False])])
+                bom_line = mrp_bom_line.search([('db_id', '=', line.get('id')), ('instance_id', '=', store.id)])
                 if bom_line:
                     line.append((1, bom_line.id, vals))
                 else:
@@ -85,5 +85,5 @@ class MrpBOM(models.Model):
                 bom.write(vals)
 
             store.count = rec.get('id')
-            self,_cr.commit()
+            self._cr.commit()
 
