@@ -29,7 +29,7 @@ class MrpBOM(models.Model):
             tmpl_attribute_value_ids = []
             for line in bom_lines:
                 if line.get('bom_product_template_attribute_value_ids'):
-                    tmpl_attribute_value_ids.append(line.get('bom_product_template_attribute_value_ids')[1])
+                    tmpl_attribute_value_ids += line.get('bom_product_template_attribute_value_ids')
 
             mapped_uom_ids = {}
             if uom_ids:
@@ -50,14 +50,14 @@ class MrpBOM(models.Model):
                 vrnt = product_product.search([('db_id', '=', line.get('product_id')[0]), ('store_id', '=', store.id), ('active', 'in', [True, False])])
                 uom_id = mapped_uom_ids.get(line.get('product_uom_id')[0], False)
 
-                prdt_tmpl_attr_val_id = False
+                prdt_tmpl_attr_val_ids = []
                 if line.get('bom_product_template_attribute_value_ids'):
-                    prdt_tmpl_attr_val_id = mapped_tmpl_attribute_value_ids[line.get('bom_product_template_attribute_value_ids')[0]]
+                    prdt_tmpl_attr_val_ids = list(map(lambda x: mapped_tmpl_attribute_value_ids.get(x), line.get('bom_product_template_attribute_value_ids')))
 
                 vals = {'product_id': vrnt.id, 
                 'product_qty': line.get('product_qty'),
                 'product_uom_id': uom_id,
-                'bom_product_template_attribute_value_ids': prdt_tmpl_attr_val_id,
+                'bom_product_template_attribute_value_ids': [(6, 0, prdt_tmpl_attr_val_ids)] if prdt_tmpl_attr_val_ids else [],
                 'db_id': line.get('id'),
                 'instance_id': store.id}
 
