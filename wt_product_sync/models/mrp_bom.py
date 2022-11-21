@@ -74,7 +74,7 @@ class MrpBOM(models.Model):
             'product_qty': rec.get('product_qty'),
             'code': rec.get('code'),
             'type': rec.get('type'),
-            'bom_line_ids': lines
+            'bom_line_ids': lines,
             'consumption': rec.get('consumption'),
             'db_id': rec.get('id'),
             'instance_id': store.id}
