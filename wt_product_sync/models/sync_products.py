@@ -341,7 +341,7 @@ class ProductSync(models.Model):
         mrp_bom = self.env['mrp.bom']
         count = self.bom_count
         # while True:
-        bom_lines = self.established_connection('mrp.bom.line', 'search_read', [['id', 'in', line_ids], ['active', 'in', [True, False]]], {'order':'id'})
+        bom_lines = self.established_connection('mrp.bom.line', 'search_read', [['id', 'in', line_ids]], {'order':'id'})
         return bom_lines
             # products = self.established_connection('product.template', 'search_read', [['id', '=', 35], ['active', 'in', [True, False]]], {'limit': 100, 'order':'id'})
 
