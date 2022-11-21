@@ -144,7 +144,7 @@ class ProductSync(models.Model):
                     )
                 value_dict[value.get('id')] = self_att_value.id
         
-        attr_line = AttributeLine.search([('product_tmpl_id', '=', product_id.id)])            
+        attr_line = AttributeLine.search([('product_tmpl_id', '=', product_id.id)])
         for line_rec in line_records:
             self_attribute = Attribute.search(
                 [("name", "=", line_rec.get('attribute_id')[1])]
@@ -467,7 +467,7 @@ class ProductSync(models.Model):
                                 'purchase_method': product.get('purchase_method'),
                                 'website_sequence': product.get('website_sequence'),
                                 "public_categ_ids": [(6, 0, public_categ_ids)] if public_categ_ids else [],
-                                "active": product.get("active"),
+                                # "active": product.get("active"),
                                 "invoice_policy": product.get("invoice_policy"),
                                 "taxes_id": [(6, 0, taxes.ids)] if taxes else [],
                                 "supplier_taxes_id": [(6, 0, supplier_taxes.ids)] if supplier_taxes else [], 
@@ -512,14 +512,18 @@ class ProductSync(models.Model):
             #         )
 
             # get product attributes and values for varients
+            # import pdb;pdb.set_trace()
             if attribute_line:
                 self.sync_product_attributes(attribute_line, product_id)
+
 
             self.sync_product_varient_update(product, product_id)
             get_seller_ids = []
 
             # if product.get("seller_ids"):
             #     self.get_varient_seller_ids(product, product_id)
+
+            product_id.active = product.get("active")
 
             self.count = product.get('id')
 
