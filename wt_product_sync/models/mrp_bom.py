@@ -63,9 +63,9 @@ class MrpBOM(models.Model):
 
                 bom_line = mrp_bom_line.search([('db_id', '=', line.get('id')), ('instance_id', '=', store.id)])
                 if bom_line:
-                    line.append((1, bom_line.id, vals))
+                    lines.append((1, bom_line.id, vals))
                 else:
-                    line.append((0, 0, vals))
+                    lines.append((0, 0, vals))
 
             prdt_tmpl = product_template.search([('db_id', '=', rec.get('product_tmpl_id')[0]), ('store_id', '=', store.id), ('active', 'in', [True, False])])
             vrnt = product_product.search([('db_id', '=', rec.get('product_id')), ('store_id', '=', store.id), ('active', 'in', [True, False])])
@@ -74,6 +74,7 @@ class MrpBOM(models.Model):
             'product_qty': rec.get('product_qty'),
             'code': rec.get('code'),
             'type': rec.get('type'),
+            'bom_line_ids': lines
             'consumption': rec.get('consumption'),
             'db_id': rec.get('id'),
             'instance_id': store.id}
