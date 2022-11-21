@@ -333,7 +333,7 @@ class ProductSync(models.Model):
                 break
 
     def action_product_template_attribute_value_sync(self, ids):
-        records = self.established_connection('product.template.attribute.value', 'search_read', [['id', 'in', ids], ['active', 'in', [True, False]]], {'order':'id'})
+        records = self.established_connection('product.template.attribute.value', 'search_read', [['id', 'in', ids]], {'order':'id'})
         return records
 
 
