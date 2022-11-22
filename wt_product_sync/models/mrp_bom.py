@@ -37,13 +37,14 @@ class MrpBOM(models.Model):
 
             mapped_tmpl_attribute_value_ids = {}
             if tmpl_attribute_value_ids:
-                recs = store.action_product_template_attribute_value_sync(list(set(tmpl_attribute_value_ids)))
-                for r in recs:
-                    attr = product_attribute.search([('name', '=', r.get('attribute_id')[1])])
-                    attr_val = product_attribute_value.search([('attribute_id', '=', attr.id), ('name', '=', r.get('name'))])
-                    tmpl = product_template.search([('db_id', '=', r.get('product_tmpl_id')[0]), ('store_id', '=', store.id), ('active', 'in', [True, False])])
-                    tmpl_attr_val = product_template_attribute_value.search([('product_tmpl_id', '=', tmpl.id), ('product_attribute_value_id', '=', attr_val.id), ('attribute_id', '=', attr.id)])
-                    mapped_tmpl_attribute_value_ids[r.get('id')] = tmpl_attr_val.id
+                reccords = store.action_product_template_attribute_value_sync(list(set(tmpl_attribute_value_ids)))
+                for recc in reccords:
+                    if recc.get('ptav_active'):    
+                        attr = product_attribute.search([('name', '=', recc.get('attribute_id')[1])])
+                        attr_val = product_attribute_value.search([('attribute_id', '=', attr.id), ('name', '=', recc.get('name'))])
+                        tmpl = product_template.search([('db_id', '=', recc.get('product_tmpl_id')[0]), ('store_id', '=', store.id), ('active', 'in', [True, False])])
+                        tmpl_attr_val = product_template_attribute_value.search([('product_tmpl_id', '=', tmpl.id), ('product_attribute_value_id', '=', attr_val.id), ('attribute_id', '=', attr.id)])
+                        mapped_tmpl_attribute_value_ids[recc.get('id')] = tmpl_attr_val.id
 
             lines = []
 
@@ -55,8 +56,12 @@ class MrpBOM(models.Model):
 
                 prdt_tmpl_attr_val_ids = []
                 if line.get('bom_product_template_attribute_value_ids'):
-                    prdt_tmpl_attr_val_ids = list(map(lambda x: mapped_tmpl_attribute_value_ids.get(x), line.get('bom_product_template_attribute_value_ids')))
-
+                    for x in line.get('bom_product_template_attribute_value_ids'):
+                        if mapped_tmpl_attribute_value_ids.get(x):
+                            prdt_tmpl_attr_val_ids.append(mapped_tmpl_attribute_value_ids.get(x))
+                    # prdt_tmpl_attr_val_ids = list(map(lambda x: mapped_tmpl_attribute_value_ids.get(x), line.get('bom_product_template_attribute_value_ids')))
+                
+        
                 vals = {'product_id': vrnt.id, 
                 'product_qty': line.get('product_qty'),
                 'product_uom_id': uom_id,
