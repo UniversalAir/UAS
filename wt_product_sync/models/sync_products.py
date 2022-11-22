@@ -348,7 +348,7 @@ class ProductSync(models.Model):
         if not self.last_bom_import_history:
             write_date = str((datetime.datetime.now() - relativedelta(years=1000)).date())
         while True:
-            boms = self.established_connection('mrp.bom', 'search_read', [['write_date', '>', write_date], ['id', '>', count], ['active', 'in', [True, False]]], {'limit': 100, 'order':'id'})
+            boms = self.established_connection('mrp.bom', 'search_read', [['id', '>', count], ['active', 'in', [True, False]]], {'limit': 100, 'order':'id'})
             if boms:
                 mrp_bom.set_bom_to_odoo(boms, self)
                 count = int(boms[-1]['id'])
@@ -549,10 +549,8 @@ class ProductSync(models.Model):
             #         )
 
             # get product attributes and values for varients
-            # import pdb;pdb.set_trace()
             if attribute_line:
                 self.sync_product_attributes(attribute_line, product_id)
-
 
             self.sync_product_varient_update(product, product_id)
             get_seller_ids = []

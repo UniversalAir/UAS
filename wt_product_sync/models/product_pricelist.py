@@ -124,7 +124,6 @@ class ProductSync(models.Model):
         self.sync_website(websites)
 
         for rec in pricelists:
-            # import pdb;pdb.set_trace()
             print(">>>>>",rec.get('id'))
             pricelist = ProductPricelist.search([('db_id', '=', rec.get('id')), ('store_id', '=', self.id), ('active', 'in', [True, False])])         
             lines = []

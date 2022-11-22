@@ -39,15 +39,18 @@ class MrpBOM(models.Model):
             if tmpl_attribute_value_ids:
                 recs = store.action_product_template_attribute_value_sync(list(set(tmpl_attribute_value_ids)))
                 for r in recs:
-                    attr = product_attribute.search([('name', 'ilike', r.get('attribute_id')[1])])
-                    attr_val = product_attribute_value.search([('attribute_id', '=', attr.id), ('name', 'ilike', r.get('name'))])
-                    tmpl = product_template.search([('db_id', '=', r.get('product_tmpl_id')), ('store_id', '=', store.id), ('active', 'in', [True, False])])
+                    attr = product_attribute.search([('name', '=', r.get('attribute_id')[1])])
+                    attr_val = product_attribute_value.search([('attribute_id', '=', attr.id), ('name', '=', r.get('name'))])
+                    tmpl = product_template.search([('db_id', '=', r.get('product_tmpl_id')[0]), ('store_id', '=', store.id), ('active', 'in', [True, False])])
                     tmpl_attr_val = product_template_attribute_value.search([('product_tmpl_id', '=', tmpl.id), ('product_attribute_value_id', '=', attr_val.id), ('attribute_id', '=', attr.id)])
                     mapped_tmpl_attribute_value_ids[r.get('id')] = tmpl_attr_val.id
 
             lines = []
+
             for line in bom_lines:
                 vrnt = product_product.search([('db_id', '=', line.get('product_id')[0]), ('store_id', '=', store.id), ('active', 'in', [True, False])])
+                if not vrnt:
+                    continue
                 uom_id = mapped_uom_ids.get(line.get('product_uom_id')[0], False)
 
                 prdt_tmpl_attr_val_ids = []
