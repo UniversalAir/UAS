@@ -212,26 +212,51 @@ class ProductSync(models.Model):
         
     def sync_product_varient_update(self, db_product, product_tmpl_id):
         product_product_obj = self.env["product.product"]
-        AttributeValue = self.env["product.template.attribute.value"]
+        # AttributeValue = self.env["product.template.attribute.value"]
+
+        # product_product = self.env['product.product']
+        product_template = self.env['product.template']
+
+        product_template_attribute_value = self.env['product.template.attribute.value']
+        product_attribute_value = self.env['product.attribute.value']
+        product_attribute = self.env['product.attribute']
         Quant = self.env["stock.quant"]
 
         # get default warehouse
         # warehouse = self.env["stock.warehouse"].search([("company_id", "=", self.company_id.id)], limit=1)
-        
         db_product_varients = self.established_connection('product.product', 'search_read', [["product_tmpl_id", "=", db_product.get('id')], ['active', 'in', [True, False]]], False)
+        varients = product_product_obj.sudo().search([("product_tmpl_id", "=",product_tmpl_id.id)])
+
+        tmpl_attribute_value_ids = []
+        for varient_rec in db_product_varients:
+            if varient_rec.get('product_template_attribute_value_ids'):
+                tmpl_attribute_value_ids += varient_rec.get('product_template_attribute_value_ids')
+
+        mapped_tmpl_attribute_value_ids = {}
+        if tmpl_attribute_value_ids:
+            records = self.action_product_template_attribute_value_sync(list(set(tmpl_attribute_value_ids)))
+            for rec in records:
+                attr = product_attribute.search([('name', '=', rec.get('attribute_id')[1])])
+                attr_val = product_attribute_value.search([('attribute_id', '=', attr.id), ('name', '=', rec.get('name'))])
+                tmpl = product_template.search([('db_id', '=', rec.get('product_tmpl_id')[0]), ('store_id', '=', self.id), ('active', 'in', [True, False])])
+                tmpl_attr_val = product_template_attribute_value.search([('product_tmpl_id', '=', tmpl.id), ('product_attribute_value_id', '=', attr_val.id), ('attribute_id', '=', attr.id)])
+                mapped_tmpl_attribute_value_ids[rec.get('id')] = tmpl_attr_val.id
+
         for varient_rec in db_product_varients:
             varients = product_product_obj.sudo().search([("product_tmpl_id", "=",product_tmpl_id.id)])
-            update_varients = varients.filtered(
-                lambda x: x.partner_ref == varient_rec.get("display_name")
-                and x.product_tmpl_id.id == product_tmpl_id.id
-            )
+            update_varients = varients.filtered(lambda x: x.partner_ref == varient_rec.get("display_name"))
             if not update_varients:
                 try:
                     varient_ref = varient_rec.get("display_name").split("] ")[1]
                 except:
                     varient_ref = varient_rec.get("display_name")
                 update_varients = varients.filtered(lambda x: x.partner_ref == varient_ref and x.product_tmpl_id.id == product_tmpl_id.id)
-            
+
+            if not update_varients:
+                prdt_tmpl_attr_val_ids = list(map(lambda x: mapped_tmpl_attribute_value_ids.get(x), varient_rec.get('product_template_attribute_value_ids')))
+                update_varients = varients.filtered(lambda x: sorted(x.product_template_attribute_value_ids.ids) == sorted(prdt_tmpl_attr_val_ids))
+
+
             vals = {
                     "name": varient_rec.get("name"),
                     "type": varient_rec.get("type"),
@@ -264,13 +289,13 @@ class ProductSync(models.Model):
 
             update_varients.write(vals)
 
-            value_ids = self.established_connection("product.template.attribute.value", 'search_read', [["id", "in", varient_rec.get("product_template_attribute_value_ids")]], False)
-            for att_value in value_ids:
-                att_val = AttributeValue.search([("product_tmpl_id", "=", product_tmpl_id.id),("name", "=", att_value.get("name"))])
-                self_att_val = att_val.filtered(lambda x: x.display_name == att_value.get("display_name"))
-                if self_att_val:
-                    self_att_val.price_extra = att_value.get("price_extra"
-                        )   
+            for att_value in varient_rec.get("product_template_attribute_value_ids"):
+                prdt_tmpl_attr_val = product_template_attribute_value.browse(mapped_tmpl_attribute_value_ids.get(att_value))
+                db_prdt_tmpl_attr_val = list(filter(lambda x: x.get('id') == att_value, records))
+                if db_prdt_tmpl_attr_val and prdt_tmpl_attr_val:
+                    prdt_tmpl_attr_val.price_extra = db_prdt_tmpl_attr_val[0].get("price_extra")
+
+
             # qty according to varient
             # if (
             #     varient_rec.get("qty_available")
@@ -383,8 +408,6 @@ class ProductSync(models.Model):
         uom_ids = []
         uom_po_ids = []
         public_categories = []
-        # compatible_ids = []
-
 
         for product in products:
             if product.get('taxes_id'):
@@ -412,7 +435,7 @@ class ProductSync(models.Model):
         if tmpl_images:
             ProductImage.set_images_to_odoo(list(set(tmpl_images)), self)
 
-        mapped_public_categories = {}
+        mapped_public_categories = {}   
         if public_categories:
             mapped_public_categories = self.set_categories_to_odoo(list(set(public_categories)))
         
