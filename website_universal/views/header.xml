@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="navbar_nav" inherit_id="website.navbar_nav" name="Navbar Nav">
+		<xpath expr="//ul[@id='top_menu']" position="attributes">
+			<attribute name="t-att-class">"nav navbar-nav #{_nav_class}"</attribute>
+		</xpath>
+	</template>
+	<template id="header_wishlist_link_inherit" inherit_id="website_sale_wishlist.header_wishlist_link">
+		<xpath expr="//t/li/a" position="replace">
+		</xpath>
+	</template>
+
+	<template id="shop_department_main_tmpl" name="shop_department_main_templ">
+		<t t-set="all_parent_cates" t-value="website.get_all_parent_categories()"/>
+		<ul t-if="all_parent_cates and not selected_category_id" class="categories_dropdwon_cl scroll_bar_section blocked--link">
+			<t t-foreach="all_parent_cates.sorted(lambda x: x.name)" t-as="sb_category">
+				<li class="blocked--link">
+					<a t-attf-href="/shop/category/{{slug(sb_category)}}" t-attf-class="blocked--link navigation--link #{'link--go-forward' if sb_category.child_id else ''}" t-att-data-category-id="sb_category.id" t-attf-data-fetchurl="/widgets/listing/getCategory/categoryId/#{sb_category.id}">
+						<span class="blocked--link" t-field="sb_category.name"/>
+						<span class="is--icon-right blocked--link" t-if="sb_category.child_id"> 
+							<i class="fa fa-angle-right blocked--link"></i> 
+						</span> 
+					</a>
+				</li>
+			</t>
+		</ul>
+		<ul t-if="selected_category_id" class="categories_dropdwon_cl scroll_bar_section blocked--link">
+			<li class="blocked--link">
+				<a t-attf-href="/shop/category/{{slug(selected_category_id)}}" t-attf-class="blocked--link navigation--link selected_cat">
+					<span class="blocked--link" t-field="selected_category_id.name"/>
+				</a>
+			</li>
+			<li class="blocked--link" t-if="selected_category_id.parent_id">
+				<a href="#" class="is_back_button blocked--link" t-att-data-category-id="selected_category_id.parent_id and selected_category_id.parent_id.id" t-attf-data-fetchurl="/widgets/listing/getCategory/categoryId/#{selected_category_id.parent_id.id}"><i class="fa fa-angle-left blocked--link"></i> Back</a>
+			</li>
+			<li class="blocked--link" t-if="not selected_category_id.parent_id">
+				<a href="#" class="is_back_button blocked--link" t-att-data-category-id="main" t-attf-data-fetchurl="/widgets/listing/getCategory/categoryId/main"><i class="fa fa-angle-left blocked--link"></i> Back</a>
+			</li>
+			<t t-foreach="selected_category_id.child_id.sorted(lambda x: x.name)" t-as="sb_category">
+				<li class="blocked--link">
+					<a t-attf-href="/shop/category/{{slug(sb_category)}}" t-attf-class="blocked--link navigation--link #{'link--go-forward' if sb_category.child_id else ''}" t-att-data-category-id="sb_category.id" t-attf-data-fetchurl="/widgets/listing/getCategory/categoryId/#{sb_category.id}">
+						<span class="blocked--link" t-field="sb_category.name"/>
+						<span class="is--icon-right blocked--link" t-if="sb_category.child_id"> 
+							<i class="fa fa-angle-right blocked--link"></i> 
+						</span> 
+					</a>
+				</li>
+			</t>
+		</ul>
+	</template>
+
+	<template id="header_univeral" inherit_id="website.layout" name="Header Universal" priority="100">
+		<xpath expr="//header//t" position="before">
+			<div id="top_header_main" class="header d-none d-md-block">
+				<t t-set="is_connected" t-value="not user_id._is_public()"/>
+				<div class="container top_header d-md-block">
+					<div id="header-icon-69631" class="header-icon hbe hbe-icon-element hide-default-false hide-sticky-false hbe-left size-small"><span class="hbe-toggle hicon fa fa-map-marker"></span></div>
+					<div id="header-slogan-53642" class="hbe header-slogan hide-default-false hide-sticky-false hbe-left"><span style="font-size: 13px;text-shadow: 0 0.5px;">463 W Highland Ave, San Bernardino, CA 92405</span></div>
+					<div id="header-icon-969829" class="header-icon hbe hbe-icon-element hide-default-false hide-sticky-false hbe-left size-small"><span class="hbe-toggle hicon fa fa-phone"></span></div>
+					<div id="header-slogan-18402" class="hbe header-slogan hide-default-false hide-sticky-false hbe-left"><span style="font-size: 13px; text-shadow: 0 0.5px;">800-864-2470 or 909-886-9491</span></div>
+					<div id="header-icon-487577" class="header-icon hbe hbe-icon-element hide-default-false hide-sticky-false hbe-left size-small"><span class="hbe-toggle hicon fa fa-clock-o"></span></div>
+					<div id="header-slogan-291137" class="hbe header-slogan hide-default-false hide-sticky-false hbe-left"><span style="font-size: 13px; text-shadow: 0 0.5px;">Mon. - Fri. 09:00 am - 06:00 pm PST</span></div>
+					<div id="header-login-865646" class="login-font-size-14 header-login hbe hbe-icon-element hide-default-false hide-sticky-false hbe-right size-small box-align-left">
+						<div id="login-toggle-865646" class="login-toggle hbe-toggle fa fa-user" data-close-icon="ien-eclose-3">
+							<a href="/web/login" class="login-title login" t-if="not is_connected">Login</a>
+							<a t-attf-href="/web/session/logout?redirect=/" class="login-title login" t-if="is_connected">Logout</a>
+						</div>
+					</div>
+					<t t-set="active_lang" t-value="list(filter(lambda lg : lg[0] == lang, languages))[0]"/>
+					<t t-set="language_selector_visible" t-value="len(languages) &gt; 1"/>
+					<div class="header-vertical-separator hbe hide-default-false hide-sticky-false hbe-right solid vertical header-vertical-separator-135887" t-if="language_selector_visible"><div class="line"></div></div>
+					<div id="language-switcher-900531" class="language-switcher hbe hide-default-false hide-sticky-false hbe-right" t-if="language_selector_visible">
+					   <div class="language-switcher-wrapper hbe-icon-element size-small box-align-center">
+						  <div class="language-toggle fa fa-globe hbe-toggle" data-close-icon="ien-eclose-3" data-drop-down-menu="true"></div>
+						  <ul class="no-ls blocked--link">
+							<t t-foreach="languages" t-as="lg">
+								 <li class="blocked--link">
+									<a  t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang_code=lg[0])" class="blocked--link">
+										<img t-att-src="lg[4]" class="blocked--link"/>
+										<span style="argin-left:0.3em;" t-esc="lg[2].split('/').pop()" class="blocked--link"/>
+									</a>
+								 </li>
+							</t>
+						  </ul>
+					   </div>
+					</div>
+				</div>
+			</div>
+			<div id="min_header_main" class="header">
+				<div class="container mid_header">
+					<div class="row">
+						<div class="col-md-12 text-align-none d-none d-md-block">
+							<div class="header-logo">
+								<a href="/" title="Universal Air">
+									<t t-if="website.logo">
+										<span t-field="website.logo" t-options="{'widget': 'image', 'style': 'width: 250px; ,height: 26px;'}" role="img" t-att-aria-label="'Logo of %s' % website.name" t-att-title="website.name" />
+									</t>
+									<t t-if="not website.logo">
+										<img class="logo" src="/website_universal/static/src/img/header_bg.png" alt="Universal Air"/>
+									</t>
+
+								</a>
+							</div>
+							<!-- <div class="header_woo_search_form">
+							   <div class="dgwt_wcas_search_wrapp">
+									<t t-call="website_sale.search">
+	                                    <t t-set="search" tt-value="False"/>
+	                                    <t t-set="_form_classes" t-valuef="mb-2 mb-lg-0"/>
+	                                    <t t-set="_classes" t-value="'me-sm-2'"/>
+	                                </t>
+							   </div>
+							</div> -->
+							<t t-set="website_sale_order" t-value="website.sale_get_order()" />
+							<div class="header-cart">
+							   <a href="/shop/cart" class="header_show_cart_popover" title="View your shopping cart">
+								<div class="cart-toggle fa fa-shopping-cart">                                                
+									<div class="cart-contents">
+									  <span class="cart-title">My cart</span>
+									  <span class="cart-total">
+										<span class="cart_amount">
+											<span>$&amp;nbsp;<span class="oe_currency_value" t-esc="round(website_sale_order and website_sale_order.amount_total or 0.00, 2)"/></span>
+										</span>
+									  </span>
+									  <span class="cart_qty cart-info"  t-esc="website_sale_order and website_sale_order.cart_quantity or '0'"/>
+									</div>
+								</div>
+							   </a>
+							</div>
+							<div class="header-vertical-separator"><div class="line"></div></div>
+							<t t-set="wishcount" t-value="len(request.env['product.wishlist'].current())"/>
+							<div class="wishlist_mid_header o_wsale_my_wish">
+								<a href="/shop/wishlist" target="_self" class="fa fa-heart-o">
+									<sup class="wishlist_counter my_wish_quantity" t-esc="wishcount or ''"/>
+								</a>
+							</div>
+						</div>
+						<div class="col-12 top_mobile_header d-md-none">
+							<div class="row">
+								<div class="col-12">
+									<div class="header-logo">
+										<a href="/" title="Mobimax">
+											<img class="logo" src="/website_universal/static/src/img/header_bg.png" alt="Universal Air"/>
+										</a>
+									</div>
+									<div class="shop_info_part">
+										<div class="header_mobile_user">
+											<a href="/my" target="_self" class="userdrop_dn_link fa fa-user-o" data-drop-down-menu="true"/>
+											<div class="dropdownmenu_user blocked--link">
+												<a href="/my/home" class="blocked--link" t-if="is_connected">My Account</a>
+												<a t-attf-href="/web/session/logout?redirect=/"  class="blocked--link" t-if="is_connected">Logout</a>
+												<a href="/web/login"  class="blocked--link" t-if="not is_connected">Sign In</a>
+												<a href="/web/signup"  class="blocked--link" t-if="not is_connected">Sign Up</a>
+											</div>
+										</div>
+										<div class="header-vertical-separator"><div class="line"></div></div>
+										<div class="header-cart">
+											<a href="/shop/cart" class="header_show_cart_popover" title="View your shopping cart">
+											   <div class="cart-toggle fa fa-shopping-cart">                                                
+													<div class="cart-contents" style="opacity: 1;">
+													  <span class="cart-title">My cart</span>
+													  <span class="cart-total">
+														<span class="cart_amount">
+															<span>$&amp;nbsp;<span class="oe_currency_value" t-esc="round(website_sale_order and website_sale_order.amount_total or 0.00, 2)"/></span>
+														</span>
+													  </span>
+													  <span class="cart_qty cart-info"  t-esc="website_sale_order and website_sale_order.cart_quantity or '0'"/>
+													</div>
+											   </div>
+											</a>
+										</div>
+										<div class="header-vertical-separator"><div class="line"></div></div>
+										<div class="wishlist_mid_header o_wsale_my_wish">
+											<a href="/shop/wishlist" target="_self" class="fa fa-heart-o">
+												<sup class="wishlist_counter my_wish_quantity" t-esc="wishcount or ''"/>
+											</a>
+										</div>
+									</div>
+								</div>
+								<!-- <div class="col-12">
+									<div class="header_woo_search_form">
+									   <div class="dgwt_wcas_search_wrapp">
+											<t t-call="website_sale.search">
+			                                    <t t-set="search" t-value="False"/>
+			                                    <t t-set="_form_classes" t-valuef="mb-2 mb-lg-0"/>
+			                                    <t t-set="_classes" t-value="'me-sm-2'"/>
+			                                </t>
+									   </div>
+									</div>
+								</div> -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>	
+		</xpath>
+		<xpath expr="//div[@id='top_menu_collapse']//t[@t-as='submenu']//t[@t-call='website.submenu']" position="before">
+			<t t-if="submenu_index == 0">
+				<li class="nav-item">
+					<a target="_self" href="#" class="btn btn-default hrb_my_shop_department ml-4 pl-3 pr-3" data-drop-down-menu="true" data-oe-model="ir.ui.view" data-oe-id="1776" data-oe-field="arch" data-oe-xpath="/data/xpath/section/div[1]/a[1]"><i class="fa fa-car pr-2"></i>All Departments</a>
+					<div class="shop_department_main" data-subcategory-nav="true">
+						<t t-call="website_universal.shop_department_main_tmpl"/>
+					</div>
+				</li>
+			</t>
+		</xpath>
+		<xpath expr="//div[@id='top_menu_collapse']//t[@t-as='submenu']//t[@t-call='website.submenu']" position="after">
+			<t t-if="submenu_index == 1">
+				<t t-set="header_cate_ids" t-value="website.get_header_display_categories()"/>
+				<t t-foreach="header_cate_ids" t-as="mhcategory">
+					<li class="nav-item">
+						<a t-attf-href="/shop/category/{{slug(mhcategory)}}"
+							t-attf-class="nav-link #{' active' if category and category.id == mhcategory.id else ''}"
+							role="menuitem"
+							>
+							<span t-field="mhcategory.name"/>
+						</a>
+					</li>
+				</t>
+			</t>
+		</xpath>
+		<xpath expr="//t[@t-call='portal.placeholder_user_sign_in']" position="replace"/>
+		<xpath expr="//t[@t-call='portal.user_dropdown']" position="replace">
+			<t t-set="is_connected" t-value="not user_id._is_public()"/>
+			<li t-if="is_connected" class="nav-item">
+				<a href="/my/home"
+					class="nav-link"
+					role="menuitem"
+					>
+					<span>My Account</span>
+				</a>
+			</li>
+		</xpath>
+	</template>
+
+	<template id="header_cart_link" inherit_id="website_sale.header_cart_link" priority="99">
+		<xpath expr="//li[2]" position="replace"/>
+		<xpath expr="//li[1]" position="replace"/>
+	</template>
+
+	<template id="header_call_to_action" inherit_id="website.header_call_to_action">
+		<xpath expr="//div[@t-attf-class='oe_structure oe_structure_solo #{_div_classes}']" position="replace">
+			<section class="s_text_block" data-snippet="s_text_block" data-name="Text">
+				<div class="container">
+					<a target="_self" href="#" class="btn btn-primary hrb_my_vehicale ml-4 pl-3 pr-3" data-drop-down-menu="true"><i class="fa fa-car pr-2"></i>My vehicles</a>
+					<div class="megamenu_my_vehicale blocked--link">
+						<form action="#" method="post" class="blocked--link">
+							<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+							<t t-set="max_cate_ids" t-value="website.get_branded_categories() or []"/>
+							<div class="form-group blocked--link">
+								<select class="form-control blocked--link" id="car_make" name="car_make">
+								 	<option selected="selected" value="">Make</option>
+								  	<t t-foreach="max_cate_ids" t-as="max_cate_id">
+									  	<t t-foreach="max_cate_id.child_id.sorted(lambda x: x.name)" t-as="mcate_id">
+											<option t-att-value="mcate_id.id">
+												<t t-esc="mcate_id.name"/>
+											</option>
+									 	 </t>
+									</t>
+								</select>
+							</div>
+							<div class="form-group blocked--link">
+								<select class="form-control blocked--link" id="car_model" name="car_model">
+								  <option selected="selected" value="">Model</option>
+								</select>
+							</div>
+							<button type="button" class="btn btn-primary w-100 text-uppercase font-weight-bold blocked--link">Search</button>
+						</form>
+					</div>
+				</div>
+			</section>
+		</xpath>
+	</template>
+	<template id="make_sub_cate_id" name="make model list">
+		<option selected="selected" value="">Model</option>
+		<t t-if="make_main_cate_id">
+			 <t t-foreach="make_main_cate_id.child_id.sorted(lambda x: x.name)" t-as="model_cate_id">
+				<option t-att-value="model_cate_id.id">
+					<t t-esc="model_cate_id.name"/>
+				</option>
+			</t>
+		</t>
+	</template>
+</odoo>

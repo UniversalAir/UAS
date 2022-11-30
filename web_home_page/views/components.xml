@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="product_item" name="product item">
+		<t t-set="product_href" t-value="product.website_url"/>
+        <t t-set="combination_info" t-value="product._get_combination_info(only_template=True, add_qty=add_qty or 1, pricelist=pricelist)"/>
+       <form action="/shop/cart/update" method="post">
+			<div t-attf-class="product-default-single #{extr_class or ''}">
+				<t t-set="product_variant_id" t-value="product._get_first_possible_variant_id()"/>
+				<input name="add_qty" value="1" type="hidden"/>
+            	<input name="product_id" t-att-value="product_variant_id" type="hidden"/>
+			    <div class="product-img-warp">
+			        <a t-att-href="product_href" class="product-default-img-link" tabindex="-1">
+			            <img t-attf-src="/web/image/product.template/#{product.id}/image_1920" t-att-alt="product.name" class="product-default-img img-fluid"/>
+			        </a>
+			        <div class="product-action-icon-link">
+			            <ul>
+			                <li>
+			                	<t t-set="in_wish" t-value="product._is_in_wishlist()"/>
+			                	<a href="#" class="o_add_wishlist" t-att-disabled='in_wish or None' t-att-data-product-template-id="product.id" t-att-data-product-product-id="product_variant_id"><i class="fa fa-heart-o"></i></a>
+			                </li>
+			                <li><a href="#" class="o_add_compare" t-att-data-product-product-id="product_variant_id"><i class="fa fa-exchange"></i></a></li>
+			                <li><a href="#" class="quick_views_open" t-att-data-product-id="product.id"><i class="fa fa-eye"></i></a></li>
+			                <li><a href="#" class="add_to_cart_ajax_js"><i class="fa fa-shopping-cart"></i></a></li>
+			            </ul>
+			        </div>
+			    </div>
+			    <div class="product-default-content">
+			        <h6 class="product-default-link"><a t-att-href="product_href" tabindex="-1" t-field="product.name"/>
+			    	</h6>
+			        <span class="product-default-price">
+			        	<del t-attf-class="text-danger mr-2 {{'' if combination_info['has_discounted_price'] else 'd-none'}}" style="white-space: nowrap;" t-esc="combination_info['list_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}" />
+	                    <span t-if="combination_info['price']" t-esc="combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+	                    <span itemprop="price" style="display:none;" t-esc="combination_info['price']" />
+	                    <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name" />
+	                    <t t-if="pricelist.is_wholesale_pricelist and not user_id._is_public() and user_id.partner_id.property_product_pricelist.is_wholesale_pricelist">
+	                    	<span class="price_lable_for_seller">
+	                    		<t t-esc="pricelist.name"/>
+	                    	</span>
+	                    </t>
+	                    <t t-if="not pricelist.is_wholesale_pricelist and not user_id._is_public() and user_id.partner_id.property_product_pricelist.is_wholesale_pricelist">
+	                    	<span class="price_lable_for_seller">
+	                    		<t t-esc="pricelist.name"/>
+	                    	</span>
+	                    </t>
+			        </span>
+			        <t t-set="otherprice" t-value="website.get_other_pricelist()"/>
+			        <span class="product-default-price" t-if="otherprice and not user_id._is_public() and user_id.partner_id.property_product_pricelist.is_wholesale_pricelist">
+			        	<t t-set="other_combination" t-value="product.sudo()._get_first_possible_combination()"/>
+			        	<t t-set="other_combination_info" t-value="product._get_combination_info(other_combination, add_qty=add_qty or 1, pricelist=otherprice)"/>
+			        	<del t-attf-class="text-danger mr-2 {{'' if other_combination_info['has_discounted_price'] else 'd-none'}}" style="white-space: nowrap;" t-esc="other_combination_info['list_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}" />
+	                    <span t-if="other_combination_info['price']" t-esc="other_combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+	                    <span itemprop="price" style="display:none;" t-esc="other_combination_info['price']" />
+	                    <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name" />
+	                    <t t-if="otherprice.is_wholesale_pricelist and not user_id._is_public() and user_id.partner_id.property_product_pricelist.is_wholesale_pricelist">
+	                    	<span class="price_lable_for_seller">
+	                    		<t t-esc="otherprice.name"/>
+	                    	</span>
+	                    </t>
+	                    <t t-if="not otherprice.is_wholesale_pricelist and not user_id._is_public() and user_id.partner_id.property_product_pricelist.is_wholesale_pricelist">
+	                    	<span class="price_lable_for_seller">
+	                    		<t t-esc="otherprice.name"/>
+	                    	</span>
+	                    </t>
+			        </span>
+			    </div>
+			</div>
+		</form>
+	</template>
+	
+	<template id="owl_carousel_item" name="owl carousel Item">
+		<div class="item" t-foreach="products" t-as="product">
+			<t t-call="web_home_page.product_item">
+				<t t-set="extr_class" t-value="'border-around'"/>
+			</t>
+		</div>
+	</template>
+</odoo>

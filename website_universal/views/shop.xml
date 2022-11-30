@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="sort" inherit_id="website_sale.sort">
+		<xpath expr="//div/small" position="replace"></xpath>
+		<xpath expr="//div/a[@role='button']" position="attributes">
+			<attribute name="t-attf-class" separator=" " add="btn btn-secondary sort_btn_hov"/>
+		</xpath>
+	</template>
+	
+	<template id="category_recoring" name="Sub category">
+		<li t-attf-class="cat-item #{'current-cat' if c.id == category.id else ''}" t-if="not c.child_id">
+			<a t-att-href="keep('/shop/category/' + slug(c), category=0)">
+				<span t-field="c.name"/>
+			   <span class="count" t-if="get_category_count.get(c.id, 0)">(<t t-esc="get_category_count.get(c.id, 0)"/>)</span>
+			</a>
+		</li>
+		<li t-attf-class="cat-item cat-parent #{'current-cat' if c.id == category.id else ''}" t-if="c.child_id">
+		   <a t-att-href="keep('/shop/category/' + slug(c), category=0)">
+			   <span t-field="c.name"/>
+			   <span class="count" t-if="get_category_count.get(c.id, 0)">(<t t-esc="get_category_count.get(c.id, 0)"/>)</span>
+			</a>
+		   <ul class="children" t-attf-style="#{'display: none;' if c.id not in c.child_id.ids else 'display:block;'}">
+		   		<t t-foreach="c.child_id.sorted(lambda x: x.name)" t-as="c">
+		   			<t t-call="website_universal.category_recoring"/>
+		      	</t>
+			</ul>
+		</li>
+
+	</template>
+
+	<template id="product_item" name="product item">
+		<t t-set="product_href" t-value="product.website_url"/>
+        <t t-set="combination_info" t-value="product._get_combination_info(only_template=True, add_qty=add_qty or 1, pricelist=pricelist)"/>
+       <form action="/shop/cart/update" method="post">
+			<div t-attf-class="product-default-single #{extr_class or ''}">
+				<t t-set="product_variant_id" t-value="product._get_first_possible_variant_id()"/>
+				<input name="add_qty" value="1" type="hidden"/>
+            	<input name="product_id" t-att-value="product_variant_id" type="hidden"/>
+			    <div class="product-img-warp">
+			        <a t-att-href="product_href" class="product-default-img-link" tabindex="-1">
+			            <img t-attf-src="/web/image/product.template/#{product.id}/image_1920" t-att-alt="product.name" class="product-default-img img-fluid"/>
+			        </a>
+			        <div class="product-action-icon-link">
+			            <ul>
+			                <li>
+			                	<t t-set="in_wish" t-value="product._is_in_wishlist()"/>
+			                	<a href="#" class="o_add_wishlist" t-att-disabled='in_wish or None' t-att-data-product-template-id="product.id" t-att-data-product-product-id="product_variant_id"><i class="fa fa-heart-o"></i></a>
+			                </li>
+			                <li><a href="#" class="o_add_compare" t-att-data-product-product-id="product_variant_id"><i class="fa fa-exchange"></i></a></li>
+			                <li><a href="#" class="quick_views_open" t-att-data-product-id="product.id"><i class="fa fa-eye"></i></a></li>
+			                <li><a href="#" class="add_to_cart_ajax_js"><i class="fa fa-shopping-cart"></i></a></li>
+			            </ul>
+			        </div>
+			    </div>
+			    <div class="product-default-content">
+			        <h6 class="product-default-link"><a t-att-href="product_href" tabindex="-1" t-field="product.name"/>
+			    	</h6>
+			        <span class="product-default-price">
+			        	<del t-attf-class="text-danger mr-2 {{'' if combination_info['has_discounted_price'] else 'd-none'}}" style="white-space: nowrap;" t-esc="combination_info['list_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}" />
+	                    <span t-if="combination_info['price']" t-esc="combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+	                    <span itemprop="price" style="display:none;" t-esc="combination_info['price']" />
+	                    <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name" />
+	                    <t t-if="pricelist.is_wholesale_pricelist and not user_id._is_public() and user_id.partner_id.property_product_pricelist.is_wholesale_pricelist">
+	                    	<span class="price_lable_for_seller">
+	                    		<t t-esc="pricelist.name"/>
+	                    	</span>
+	                    </t>
+	                    <t t-if="not pricelist.is_wholesale_pricelist and not user_id._is_public() and user_id.partner_id.property_product_pricelist.is_wholesale_pricelist">
+	                    	<span class="price_lable_for_seller">
+	                    		<t t-esc="pricelist.name"/>
+	                    	</span>
+	                    </t>
+			        </span>
+			        <t t-set="otherprice" t-value="website.get_other_pricelist()"/>
+			        <span class="product-default-price" t-if="otherprice and not user_id._is_public() and user_id.partner_id.property_product_pricelist.is_wholesale_pricelist">
+			        	<t t-set="other_combination" t-value="product.sudo()._get_first_possible_combination()"/>
+			        	<t t-set="other_combination_info" t-value="product._get_combination_info(other_combination, add_qty=add_qty or 1, pricelist=otherprice)"/>
+			        	<del t-attf-class="text-danger mr-2 {{'' if other_combination_info['has_discounted_price'] else 'd-none'}}" style="white-space: nowrap;" t-esc="other_combination_info['list_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}" />
+	                    <span t-if="other_combination_info['price']" t-esc="other_combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+	                    <span itemprop="price" style="display:none;" t-esc="other_combination_info['price']" />
+	                    <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name" />
+	                    <t t-if="otherprice.is_wholesale_pricelist and not user_id._is_public() and user_id.partner_id.property_product_pricelist.is_wholesale_pricelist">
+	                    	<span class="price_lable_for_seller">
+	                    		<t t-esc="otherprice.name"/>
+	                    	</span>
+	                    </t>
+	                    <t t-if="not otherprice.is_wholesale_pricelist and not user_id._is_public() and user_id.partner_id.property_product_pricelist.is_wholesale_pricelist">
+	                    	<span class="price_lable_for_seller">
+	                    		<t t-esc="otherprice.name"/>
+	                    	</span>
+	                    </t>
+			        </span>
+			    </div>
+			</div>
+		</form>
+	</template>
+
+	<template id="universal_products" name="Products">
+        <t t-call="website.layout">
+            <t t-set="additional_title">Shop</t>
+            <div id="wrap" class="js_sale main_shop_page_cl_class">
+            	<section class="breadcrumb-section">
+	                   <div class="container">
+	                      <nav class="content--breadcrumb block">
+	                         <ul class="breadcrumb--list">
+	                            <li role="menuitem" class="breadcrumb--entry">
+	                               <a class="breadcrumb--link" href="/" title="Home" itemprop="item">
+	                                  <link itemprop="url" href="/"/>
+	                                  <span class="breadcrumb--title" itemprop="name">Home</span> 
+	                               </a>
+	                            </li>
+	                            <li class="breadcrumb--separator"> <i class="fa fa-angle-right"></i> </li>
+	                            <li role="menuitem" class="breadcrumb--entry">
+	                               <a class="breadcrumb--link" href="/shop" title="Shop" itemprop="item">
+	                                  <link itemprop="url" href="/shop"/>
+	                                  <span class="breadcrumb--title" itemprop="name">shop</span> 
+	                               </a>
+	                            </li>
+	                            <t t-if="category">
+			                        <t t-if="website.get_category_breadcum(category)">
+			                            <t t-set="categ_bread" t-value="website.get_category_breadcum(category)" />
+			                            <t t-foreach="categ_bread" t-as="categ">
+			                            	<li class="breadcrumb--separator"> <i class="fa fa-angle-right"></i> </li>
+			                                <li role="menuitem" class="breadcrumb--entry is--active">
+		                                       <a class="breadcrumb--link" t-att-href="keep('/shop/category/%s' % slug(categ), category=0)" t-att-title="categ.name">
+		                                          <link itemprop="url" t-att-href="keep('/shop/category/%s' % slug(categ), category=0)"/>
+		                                          <span class="breadcrumb--title" t-field="categ.name"/>
+		                                       </a>
+		                                    </li>
+			                            </t>
+			                        </t>
+			                    </t>
+	                         </ul>
+	                      </nav>
+	                   </div>
+	            </section>
+            	<section class="shop_products oe_website_sale">
+            		<div class="container">
+            			<div class="row">
+            				<div class="col-md-3">
+            					<div class="layout-sidebar product-sidebar">
+            						<aside class="shop-widgets widget-area">
+            							<form class="js_attributes mb-2" method="get">
+	            							<div class="widget_product_categories_main_cl">
+		            							<div class="widget_product_categories widget woocommerce">
+		            								<h5 class="widget_title">Categories</h5>
+		            								<ul class="product-categories">
+		            									<t t-foreach="categories.sorted(lambda x: x.name)" t-as="c">
+									                        <t t-call="website_universal.category_recoring"/>
+									                    </t>
+		            								</ul>
+		            							</div>
+	            							</div>
+										</form>
+            						</aside>
+            					</div>
+            				</div>
+            				<div class="col-md-9">
+            					<div class="top_shop_filter_bar">
+            						
+            						<t t-if="products">
+	            						<t class="mb32">
+		            						<t t-call="website.pager">
+					                            <t t-set="_classes" t-valuef="shop_pagination_main"/>
+					                        </t>
+				                    	</t>
+	            					</t>
+            					
+	            					<t t-set="website_sale_sortable" t-value="website._get_product_sort_mapping()"/>
+	            					<t t-set="isSortingBy" t-value="[sort for sort in website_sale_sortable if sort[0]==request.params.get('order', '')]"/>
+
+	            					<t t-if="is_view_active('website_sale.sort')" t-call="website_sale.sort">
+	                                    <t t-set="_classes" t-valuef="d-none d-lg-inline-block ms-3 sort_float"/>
+	                                </t>
+            					</div>
+            					<div class="product_items_block_main mt32 mb32" t-if="products">
+            						<t t-foreach="products" t-as="product">
+            							<div class="product_item_box">
+            								<t t-call="website_universal.product_item">
+												<t t-set="extr_class" t-value="'border-around'"/>
+											</t>
+            							</div>
+            						</t>
+            					</div>
+
+            					<t t-if="products">
+            						<div class="shop_bottom_paggination mb32">
+	            						<t t-call="website.pager">
+				                            <t t-set="_classes" t-valuef="shop_pagination_main"/>
+				                        </t>
+			                    	</div>
+            					</t>
+            					<t t-if="not products">
+            						<div class="text-center text-muted">
+	                                    <t t-if="not search">
+	                                        <h3 class="mt8">No product defined</h3>
+	                                        <p t-if="category">No product defined in category "<strong t-esc="category.display_name"/>".</p>
+	                                    </t>
+	                                    <t t-else="">
+	                                        <h3 class="mt8">No results</h3>
+	                                        <p>No results for "<strong t-esc='search'/>"<t t-if="category"> in category "<strong t-esc="category.display_name"/>"</t>.</p>
+	                                    </t>
+	                                    <p t-ignore="true" groups="sales_team.group_sale_manager">Click <i>'New'</i> in the top-right corner to create your first product.</p>
+	                                </div>
+            					</t>
+            				</div>
+            			</div>
+            		</div>
+            	</section>
+	            
+            </div>
+        </t>
+    </template>
+</odoo>
