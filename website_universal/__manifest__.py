@@ -28,6 +28,7 @@
     'data': [
         "views/components.xml",
         "views/header.xml",
+        "views/homepage.xml",
         "views/shop_pag.xml",
         "views/product_quick_view.xml",
         "views/shop_product.xml",
@@ -39,6 +40,7 @@
             "website_universal/static/src/scss/comman.scss",
             "website_universal/static/src/scss/fonts.scss",
             "website_universal/static/src/lib/css/owl.carousel.min.css",
+            "website_universal/static/src/scss/caourosel.scss",
             "website_universal/static/src/js/comman_methods.js",
             "website_universal/static/src/js/swDropdownMenu.js",
             "website_universal/static/src/js/make_model_drop.js",

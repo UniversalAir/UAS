@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <template id="owl_carousel_item" name="owl carousel Item">
+        <div class="item" t-foreach="products" t-as="product">
+            <t t-esc="product.name"/>
+            <!-- <t t-call="website_sale.products_item">
+                <t t-set="extr_class" t-value="'border-around'"/>
+            </t> -->
+        </div>
+    </template>
 	<template id="homepage" inherit_id="website.homepage" name="Home">
 		<xpath expr="//div[@id='wrap']" position="replace">
             <div class="oe_structure">
@@ -132,7 +140,7 @@
                 </section>
 
                 <section id="new_arrival" class="oe_structure main_categories_snippet">
-                    <div class="container">
+                    <!-- <div class="container">
                         <div class="row">
                             <div class="col-md-12 pt32 pb32">
                                 <div class="title_section_main">
@@ -152,11 +160,11 @@
                         <div class="row">
                             <div class="owl-carousel top_owl_nav" data-swowl_slider="true" data-ajaxURL="true" data-is_new_arrival="true"/>
                         </div>
-                    </div>
+                    </div> -->
                 </section>
 
                 <section id="new_arrival" class="oe_structure mb32 new_arrival_cl oe_website_sale d-none">
-                    <div class="container">
+                    <!-- <div class="container">
                         <div class="row">
                             <div class="col-md-12 pt32 pb32">
                                 <div class="title_section_main">
@@ -176,7 +184,7 @@
                         <div class="row">
                             <div class="owl-carousel top_owl_nav" data-swowl_slider="true" data-ajaxURL="true" data-is_recently="true"/>
                         </div>
-                    </div>
+                    </div> -->
                 </section>
             </div>
         </div>

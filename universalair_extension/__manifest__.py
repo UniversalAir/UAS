@@ -38,10 +38,15 @@
     'data': [
         "security/ir.model.access.csv",
         "views/category.xml",
+        "views/product.xml",
         ],
     'assets': {
         'web.assets_frontend': [
 
+        ],
+        'web.assets_backend': [
+            'universal_extension/static/src/xml/**/*'
+            'universal_extension/static/src/js/**/*'
         ],
     },
     

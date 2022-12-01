@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="product_template_form_view_inherit_extension" model="ir.ui.view">
+		<field name="name">product.template.form.inherit.extension</field>
+		<field name="model">product.template</field>
+		<field name="inherit_id" ref="website_sale.product_template_form_view"/>
+		<field name="arch" type="xml">
+			<xpath expr="//group[@name='shop']" position="inside">
+				<group string="Brands">
+					<field name="website_id" invisible="1"/>
+					<field name="brand_id" context="{'default_website_id': website_id}" domain="[('website_id', 'in', (False, website_id))]"/>
+				</group>
+			</xpath>
+			<div name="options" position="inside">
+				<div>
+					<field name="is_in_house_product"/>
+					<label for="is_in_house_product"/>
+				</div>
+				<div>
+					<field name="is_new_arrival"/>
+					<label for="is_new_arrival"/>
+				</div>
+			</div>
+			<field name='description_sale' position="after">
+				<group>
+					<field name="website_description" widget="html"/>
+				</group>
+			</field>
+		</field>
+	</record>
+
+</odoo>

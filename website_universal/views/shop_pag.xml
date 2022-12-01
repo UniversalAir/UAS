@@ -114,6 +114,12 @@
 					</aside>
 				</div>
 		  	</xpath>
+		  	<xpath expr="//aside[@id='products_grid_before']/div[hasclass('o_wsale_products_grid_before_rail')]/div[hasclass('products_categories')]" position="attributes">
+		  		<attribute name="t-attf-class" separator=" " add="d-none"/>
+		  	</xpath>
+		  	<xpath expr="//aside[@id='products_grid_before']/div[hasclass('o_wsale_products_grid_before_rail')]/div[hasclass('products_attributes_filters')]" position="attributes">
+		  		<attribute name="t-attf-class" separator=" " add="d-none"/>
+		  	</xpath>
 		  <!-- products -->
 		  <xpath expr="//div[hasclass('o_wsale_products_grid_table_wrapper')]" position="replace">
 				<div t-cache="pricelist,products" t-if="products" class="product_items_block_main mt32 mb32 o_wsale_products_grid_table_wrapper" t-att-data-default-sort="website.shop_default_sort" t-att-data-name="grid_block_name">
@@ -133,23 +139,22 @@
 		  </xpath>
 	 </template>
 	<template id="o_wsale_offcanvas" inherit_id="website_sale.o_wsale_offcanvas">
-		<xpath expr="//aside[@id='o_wsale_offcanvas']/div[@id='o_wsale_offcanvas_content']/div[hasclass('accordion-item')]" position="before">
-			<div class="layout-sidebar product-sidebar o_wsale_products_grid_before_rail">
-				<aside class="shop-widgets widget-area">
-					<form class="js_attributes mb-2" method="get">
-						<div class="widget_product_categories_main_cl">
-							<div class="widget_product_categories widget woocommerce">
-								<h5 class="widget_title">Categories</h5>
-								<ul class="product-categories">
-									<t t-foreach="categories.sorted(lambda x: x.name)" t-as="c">
-												<t t-call="website_universal.category_recoring"/>
-										  </t>
-								</ul>
-							</div>
+		<xpath expr="//aside[@id='o_wsale_offcanvas']/div[hasclass('offcanvas-body')]" position="before">
+			<div class="shop-widgets widget-area overflow-auto">
+				<form class="js_attributes mb-2" method="get">
+					<div class="widget_product_categories_main_cl">
+						<div class="widget_product_categories widget woocommerce">
+							<h5 class="widget_title">Categories</h5>
+							<ul class="product-categories">
+								<t t-foreach="categories.sorted(lambda x: x.name)" t-as="c">
+											<t t-call="website_universal.category_recoring"/>
+									  </t>
+							</ul>
 						</div>
-					</form>
-				</aside>
+					</div>
+				</form>
 			</div>
 		</xpath>
+		<xpath expr="//aside[@id='o_wsale_offcanvas']//div[@id='o_wsale_offcanvas_content']" position="replace"/>
 	</template>
 </odoo>
