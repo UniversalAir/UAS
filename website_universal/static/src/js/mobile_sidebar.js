@@ -32,6 +32,7 @@ var _t = core._t;
 
 						if ($this.hasClass('product-sidebar')) {
 							$this.parent().prepend($('<div class="sidebar-toggle"><i class="fa fa-sliders"></i></div>'));
+							// $this.parent().next().find('.top_shop_filter_bar').prepend($('<div class="sidebar-toggle"><i class="fa fa-sliders"></i></div>'));
 						} else {
 							$this.parent().prepend($('<div class="sidebar-toggle"><i class="fa fa-bars"></i></div>'));
 						}

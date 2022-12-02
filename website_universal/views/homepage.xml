@@ -23,7 +23,7 @@
                             <li data-target="#myCarousel" data-slide-to="2"/>
                         </ol>
                         <div class="carousel-inner">
-                            <div class="item active oe_img_bg pt128 pb200" style="background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.19), rgba(55, 61, 67, 0.32)), url('/web_home_page/static/src/img/banner3.png'); height: 100%;">
+                            <div class="item active oe_img_bg pt128 pb200" style="background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.19), rgba(55, 61, 67, 0.32)), url('/website_universal/static/src/img/banner3.png'); height: 100%;">
                                 <div class="container">
                                     <div class="row content">
                                         <div class="carousel-content col-lg-12 text-center">
@@ -38,11 +38,11 @@
                             </div>
                             
                             <div class="item">
-                                <img src="/web_home_page/static/src/img/banner-1.jpg" style="width:100%;"/>
+                                <img src="/website_universal/static/src/img/banner-1.jpg" style="width:100%;"/>
                             </div>
                             
                             <div class="item">
-                                <img src="/web_home_page/static/src/img/banner2.jpg" style="width:100%;"/>
+                                <img src="/website_universal/static/src/img/banner2.jpg" style="width:100%;"/>
                             </div>
                             
                         </div>
