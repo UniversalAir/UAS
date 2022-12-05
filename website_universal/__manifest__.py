@@ -32,6 +32,7 @@
         "views/shop_pag.xml",
         "views/product_quick_view.xml",
         "views/shop_product.xml",
+        "views/cart.xml",
         ],
     'assets': {
         'web.assets_frontend': [

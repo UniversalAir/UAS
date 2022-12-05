@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="product_pricelist_view" model="ir.ui.view">
+			<field name="name">product.pricelist.price_by.form</field>
+			<field name="model">product.pricelist</field>
+			<field name="inherit_id" ref="product.product_pricelist_view"/>
+			<field name="arch" type="xml">
+				<xpath expr="//group[@name='pricelist_discounts']" position="after">
+					<group string="Wholesale">
+						<field name="is_wholesale_pricelist"/>
+					</group>
+				</xpath>
+			</field>
+	</record>
+	<record id="product_public_category_custom_form_view" model="ir.ui.view">
+		<field name="name">product.public.category.inherit.form</field>
+		<field name="model">product.public.category</field>
+		<field name="inherit_id" ref="website_sale.product_public_category_form_view"/>
+		<field name="arch" type="xml">
+			<field name="sequence" position="after">
+				<field name="is_display_header"/>
+				<field name="is_branded"/>
+			</field>
+		</field>
+	</record>
+	<!-- <record id="view_company_inherit_form" model="ir.ui.view">
+		<field name="name">res.company.inherit.form</field>
+		<field name="model">res.company</field>
+		<field name="inherit_id" ref="base.view_company_form"/>
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='phone']" position="after">
+				<field name="other_phone" class="o_force_ltr"/>
+				<field name="fax" class="o_force_ltr"/>
+			</xpath>
+		</field>
+	</record> -->
+	<!-- <template id="contact_w_inherit" inherit_id="base.contact">
+		<xpath expr="//address//div[2]//div[3]" position="after">
+			<div t-if="object and object.sudo().other_phone and 'other_phone' in fields"><i t-if="not options.get('no_marker') or options.get('phone_icons')" class='fa fa-phone fa-fw' role="img" aria-label="Phone" title="Phone"/> <span class="o_force_ltr" itemprop="telephone" t-esc="object.sudo().other_phone"/></div>
+			<div t-if="object and object.sudo().fax and 'fax' in fields"><i t-if="not options.get('no_marker') or options.get('phone_icons')" class='fa fa-fax fa-fw' role="img" aria-label="fax" title="FAX"/> <span class="o_force_ltr" itemprop="fax" t-esc="object.sudo().fax"/></div>
+		</xpath>
+	</template> -->
+</odoo>

@@ -12,6 +12,10 @@ class ReimoProductBrand(models.Model):
 	description = fields.Char(translate=True)
 	image = fields.Binary()
 	product_ids = fields.One2many('product.template', 'brand_id')
-	# product_count = fields.Integer(compute='_compute_product_count')
+	product_count = fields.Integer(compute='_compute_product_count')
 	sequence = fields.Integer(string='Sequence')
 	active = fields.Boolean(default=True)
+
+	def _compute_product_count(self):
+		for brand in self:
+			brand.product_count = len(brand.product_ids)

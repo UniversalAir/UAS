@@ -52,7 +52,7 @@
 					</div>
 				</div>
 				<div class="o_wsale_product_information position-relative d-flex flex-column flex-grow-1 flex-shrink-1">
-					<div class="o_wsale_product_information_text flex-grow-1">
+					<div class="o_wsale_product_information_text flex-grow-1 d-none">
 						<h6 class="o_wsale_products_item_title mb-2">
 							<a class="product_tital_description text-decoration-none" itemprop="name" t-att-href="product_href" t-att-content="product.name" t-field="product.name" />
 							<a t-if="not product.website_published" role="button" t-att-href="product_href" class="btn btn-sm btn-danger" title="This product is unpublished.">
@@ -60,9 +60,49 @@
 							</a>
 						</h6>
 					</div>
-					<div class="o_wsale_product_sub d-flex justify-content-between align-items-end pb-1">
+					<div class="o_wsale_product_btn d-none"/>
+					<t t-set="combination_info" t-value="product._get_combination_info(only_template=True, add_qty=add_qty or 1, pricelist=pricelist)"/>
+					<div class="product-default-content">
+						<h6 class="product-default-link"><a t-att-href="product_href" tabindex="-1" t-field="product.name"/>
+						</h6>
+						<span class="product-default-price">
+							<del t-attf-class="text-danger mr-2 {{'' if combination_info['has_discounted_price'] else 'd-none'}}" style="white-space: nowrap;" t-esc="combination_info['list_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}" />
+							<span t-if="combination_info['price']" t-esc="combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+							<span itemprop="price" style="display:none;" t-esc="combination_info['price']" />
+							<span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name" />
+							<t t-if="pricelist.is_wholesale_pricelist and not user_id._is_public() and user_id.partner_id.property_product_pricelist.is_wholesale_pricelist">
+								<span class="price_lable_for_seller">
+									<t t-esc="pricelist.name"/>
+								</span>
+							</t>
+							<t t-if="not pricelist.is_wholesale_pricelist and not user_id._is_public() and user_id.partner_id.property_product_pricelist.is_wholesale_pricelist">
+								<span class="price_lable_for_seller">
+									<t t-esc="pricelist.name"/>
+								</span>
+							</t>
+						</span>
+						<t t-set="otherprice" t-value="website.get_other_pricelist()"/>
+						<span class="product-default-price" t-if="otherprice and not user_id._is_public() and user_id.partner_id.property_product_pricelist.is_wholesale_pricelist">
+							<t t-set="other_combination" t-value="product.sudo()._get_first_possible_combination()"/>
+							<t t-set="other_combination_info" t-value="product._get_combination_info(other_combination, add_qty=add_qty or 1, pricelist=otherprice)"/>
+							<del t-attf-class="text-danger mr-2 {{'' if other_combination_info['has_discounted_price'] else 'd-none'}}" style="white-space: nowrap;" t-esc="other_combination_info['list_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}" />
+							<span t-if="other_combination_info['price']" t-esc="other_combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+							<span itemprop="price" style="display:none;" t-esc="other_combination_info['price']" />
+							<span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name" />
+							<t t-if="otherprice.is_wholesale_pricelist and not user_id._is_public() and user_id.partner_id.property_product_pricelist.is_wholesale_pricelist">
+								<span class="price_lable_for_seller">
+									<t t-esc="otherprice.name"/>
+								</span>
+							</t>
+							<t t-if="not otherprice.is_wholesale_pricelist and not user_id._is_public() and user_id.partner_id.property_product_pricelist.is_wholesale_pricelist">
+								<span class="price_lable_for_seller">
+									<t t-esc="otherprice.name"/>
+								</span>
+							</t>
+						</span>
+					</div>
+					<!-- <div class="o_wsale_product_sub d-flex justify-content-between align-items-end pb-1">
 						<t t-set="template_price_vals" t-value="get_product_prices(product)"/>
-						<div class="o_wsale_product_btn d-none"/>
 						<div class="product_price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
 							<t t-if="'base_price' in template_price_vals">
 								<del t-attf-class="text-muted me-1 h6 mb-0" style="white-space: nowrap;">
@@ -74,9 +114,34 @@
 							<span itemprop="price" style="display:none;" t-esc="template_price_vals['price_reduce']" />
 							<span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name" />
 						</div>
-					</div>
+					</div> -->
 				</div>
 			</form>
+		</xpath>
+	</template>
+	<template id="product_price" inherit_id="website_sale.product_price">
+		<xpath expr="//h3[hasclass('css_editable_mode_hidden')]" position="inside">
+			<t t-if="not user_id._is_public() and user_id.partner_id.property_product_pricelist.is_wholesale_pricelist">
+				<span class="price_lable_for_seller_product">
+					<t t-esc="pricelist.name"/>
+				</span>
+			</t>
+		</xpath>
+		<xpath expr="//div[1]" position="after">
+			<t t-set="otherprice" t-value="website.get_other_pricelist()"/>
+			<div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="other_product_price mt16" t-if="otherprice and not user_id._is_public() and user_id.partner_id.property_product_pricelist.is_wholesale_pricelist">
+
+			<t t-set="other_combination" t-value="product._get_first_possible_combination()"/>
+			<t t-set="other_combination_info" t-value="product._get_combination_info(other_combination, add_qty=add_qty or 1, pricelist=otherprice)"/>
+
+				<h4 class="other_oe_price_h4 css_editable_mode_hidden">
+					<span t-attf-class="text-danger oe_default_price {{'' if other_combination_info['has_discounted_price'] else 'd-none'}}" style="text-decoration: line-through; white-space: nowrap;"
+					  t-esc="other_combination_info['list_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"
+					/>
+					<b class="other_oe_price" style="white-space: nowrap;" t-esc="other_combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+					<t t-esc="otherprice.name"/>
+				</h4>
+		  </div>
 		</xpath>
 	</template>
 </odoo>

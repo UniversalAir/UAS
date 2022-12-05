@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="cart_lines_inherit" inherit_id="website_sale.cart_lines">
+		<xpath expr="//thead//tr//th[hasclass('td-price')]" position="after">
+			<t t-set="otherprice" t-value="website.get_other_pricelist()"/>
+			<th class="text-center pb-price" t-if="otherprice and not user_id._is_public() and user_id.partner_id.property_product_pricelist.is_wholesale_pricelist">
+				<t t-esc="otherprice.name"/>
+			</th>
+		</xpath>
+		<xpath expr="//tbody//tr//td[@name='price']" position="after">
+			<t t-set="otherprice" t-value="website.get_other_pricelist()"/>
+			<td class="text-center td-other_price" name="other_price" t-if="otherprice and not user_id._is_public() and user_id.partner_id.property_product_pricelist.is_wholesale_pricelist">
+				<t t-set="other_combination" t-value="line.product_id.product_template_attribute_value_ids + line.product_no_variant_attribute_value_ids"/>
+				<t t-set="other_combination_info" t-value="line.product_id.product_tmpl_id._get_combination_info(combination, pricelist=otherprice)"/>
+				<del t-attf-class="text-danger mr-2 {{'' if other_combination_info['has_discounted_price'] else 'd-none'}}" style="white-space: nowrap;" t-esc="other_combination_info['list_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}" />
+				<span t-if="other_combination_info['price']" t-esc="other_combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+				<span itemprop="price" style="display:none;" t-esc="other_combination_info['price']" />
+				<span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name" />
+			</td>
+		</xpath>
+	</template>
+</odoo>

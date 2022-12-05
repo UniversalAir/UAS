@@ -14,7 +14,6 @@ publicWidget.registry.StandardAffixedHeader.include({
 });
 var datas = {
 		applyDataAttributes: function(shouldDeserialize, ignoreList) {
-			debugger;
 			var me = this,
 				attr;
 			ignoreList = ignoreList || [];

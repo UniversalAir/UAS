@@ -448,7 +448,6 @@ class ProductSync(models.Model):
             mapped_uom_po_ids = UomUom.set_uom_to_odoo(list(set(uom_po_ids)), self)
 
         for product in products:
-            print(">>>>>>>>>>>>>>>>>>>>%s>>>>>>>>>>>>>>>>>>>>>>>>%s"%(product.get('id'), product.get('active')))
             category_id = False
             if product.get("categ_id") and product["categ_id"][1]:
                 category_id = self.get_product_category(product["categ_id"]).id

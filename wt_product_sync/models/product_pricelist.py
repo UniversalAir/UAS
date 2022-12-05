@@ -124,7 +124,6 @@ class ProductSync(models.Model):
         self.sync_website(websites)
 
         for rec in pricelists:
-            print(">>>>>",rec.get('id'))
             pricelist = ProductPricelist.search([('db_id', '=', rec.get('id')), ('store_id', '=', self.id), ('active', 'in', [True, False])])         
             lines = []
             if rec.get('item_ids'):
@@ -156,7 +155,6 @@ class ProductSync(models.Model):
                         lines.append((1, pricelist_item.id, vals))
                     else:
                         lines.append((0, 0, vals))
-            # import pdb;pdb.set_trace()
 
 
             currecy = ResCurrency.search([('name', '=', rec.get('currency_id')[1]), ('active', 'in', [True, False])])
@@ -186,5 +184,3 @@ class ProductSync(models.Model):
                 pricelist = ProductPricelist.create(vals)
             else:
                 pricelist.write(vals)
-
-            print(">>>>>>>>>",pricelist)

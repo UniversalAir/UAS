@@ -37,7 +37,7 @@
     ],
     'data': [
         "security/ir.model.access.csv",
-        "views/category.xml",
+        "views/views.xml",
         "views/product.xml",
         ],
     'assets': {

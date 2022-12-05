@@ -2152,6 +2152,13 @@ section.breadcrumb-section{
     display: inline-block;
     vertical-align: bottom;
 }
+.price_lable_for_seller_product{
+    font-size: 1.5rem;
+    color: red;
+    font-weight: bold;
+    display: inline-block;
+    vertical-align: bottom;
+}
 #product_full_description{
     padding: 0px 12px;
 }
@@ -2677,9 +2684,7 @@ footer{
 .oe_product_image{
     height: 270px;
 }
-.product_image{   
-    border-bottom: 2px solid #eee;
-}
+
 .o_wsale_product_information_text:hover{
     color:#0a2239 !important;
     text-decoration: underline;

@@ -76,7 +76,6 @@ var wSaleUtils = require('website_sale.utils');
 			}).open();
 		},
 		ajax_cart_add_to_cart:function (ev) {
-			debugger;
 			var $form = $(ev.target).closest('form');
 			var product_id = parseInt($form.find("input[name='product_id']").val(), 10);
 			var qty = parseInt($form.find("input[name='add_qty']").val(), 10);

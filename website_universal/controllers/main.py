@@ -2,7 +2,7 @@
 import hashlib
 import json
 
-from odoo import http
+from odoo import http, fields
 from odoo.http import request
 from odoo.addons.website.controllers.main import QueryURL
 from odoo.addons.http_routing.models.ir_http import slug
@@ -136,7 +136,6 @@ class WebsiteSaleCustom(WebsiteSale):
 
 		values = self._prepare_product_values(product, category='', search='', **kwargs)
 		Website = request.website
-		# import pdb;pdb.set_trace()
 		view_track = request.website.viewref("website_universal.universal_product_quick_view").track
 		values['view_track'] = view_track
 		return request.env["ir.ui.view"]._render_template('website_universal.universal_product_quick_view', values=values)
@@ -144,14 +143,26 @@ class WebsiteSaleCustom(WebsiteSale):
 	@http.route(['/shop/cart/update_json'], type='json', auth="public", methods=['POST'], website=True, csrf=False)
 	def cart_update_json(self, product_id, line_id=None, add_qty=None, set_qty=None, display=True):
 		res = super(WebsiteSaleCustom, self).cart_update_json(product_id, line_id, add_qty, set_qty, display)
-		theme_id = request.website.sudo().theme_id
-		if theme_id and theme_id.name.startswith('theme_universal'):
-			order = request.website.sale_get_order()
-			FieldMonetary = request.env['ir.qweb.field.monetary']
-			monetary_options = {
-				'display_currency': request.website.get_current_pricelist().currency_id,
+		# theme_id = request.website.sudo().theme_id
+		# if theme_id and theme_id.name.startswith('theme_universal'):
+		order = request.website.sale_get_order()
+		FieldMonetary = request.env['ir.qweb.field.monetary']
+		res['website_sale.cart_lines'] = request.env['ir.ui.view']._render_template(
+			"website_sale.cart_lines", {
+				'website_sale_order': order,
+				'date': fields.Date.today(),
+				'suggested_products': order._cart_accessories()
 			}
-			res['amount_total'] = FieldMonetary.value_to_html(order.amount_total, monetary_options)
+		)
+		res['website_sale.short_cart_summary'] = request.env['ir.ui.view']._render_template(
+			"website_sale.short_cart_summary", {
+				'website_sale_order': order,
+			}
+		)
+		monetary_options = {
+			'display_currency': request.website.get_current_pricelist().currency_id,
+		}
+		res['amount_total'] = FieldMonetary.value_to_html(order.amount_total, monetary_options)
 		return res
 
 	@http.route('/fetch/products_items', type='http', auth="public", methods=['POST'], website=True, csrf=False)
@@ -178,7 +189,6 @@ class WebsiteSaleCustom(WebsiteSale):
 				products = viewed_products.mapped('product_tmpl_id')
 		pricelist = request.website.get_current_pricelist()
 		website = request.website
-		# import pdb;pdb.set_trace()
 		res = request.env["ir.ui.view"]._render_template('website_universal.owl_carousel_item', values={
 				'pricelist': pricelist,
 				'products': products,

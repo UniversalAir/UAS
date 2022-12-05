@@ -4,7 +4,7 @@ odoo.define('website_universal.ajax_cart', function (require) {
 var publicWidget = require('web.public.widget');
 var wSaleUtils = require('website_sale.utils');
 var  websiteSaleCartLinkSale = require('website_sale.cart');
-var  QuickViewDialog = require('website_universal.QuickViewDialog');
+// var  QuickViewDialog = require('website_universal.QuickViewDialog');
 var core = require('web.core');
 var _t = core._t;
 	
@@ -31,7 +31,6 @@ var _t = core._t;
 	publicWidget.registry.websiteSaleCartLink.include({
 		selector: 'header .header_show_cart_popover',
 		start: function () {
-			debugger;
 	        this.$el.popover({
 	            trigger: 'manual',
 	            animation: true,
