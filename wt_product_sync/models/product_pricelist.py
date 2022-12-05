@@ -127,7 +127,7 @@ class ProductSync(models.Model):
             pricelist = ProductPricelist.search([('db_id', '=', rec.get('id')), ('store_id', '=', self.id), ('active', 'in', [True, False])])         
             lines = []
             if rec.get('item_ids'):
-                pricelist_items = self.established_connection('product.pricelist.item', 'search_read', [['id', 'in', rec.get('item_ids')], ['active', 'in', [True, False]]], {'order':'id Asc'})
+                pricelist_items = self.established_connection('product.pricelist.item', 'search_read', [['id', 'in', rec.get('item_ids')]], {'order':'id Asc'})
                 for item in pricelist_items:
                     date_start = False
                     if item.get('date_start'):
