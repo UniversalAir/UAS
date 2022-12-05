@@ -54,8 +54,8 @@ class ProductSync(models.Model):
 
         for rec in records:
             company = False
-            if rec.get('company_id'):
-                company = ResCompany.search([('db_id', '=', rec.get('company_id')[0])]).id
+            # if rec.get('company_id'):
+            #     company = ResCompany.search([('db_id', '=', rec.get('company_id')[0])]).id
             lang = False
             if rec.get('default_lang_id'):
                 lang = ResLang.search([('name', '=', rec.get('default_lang_id')[1]), ('active', 'in', [True, False])])
@@ -66,7 +66,7 @@ class ProductSync(models.Model):
             vals = {'name': rec.get('name'), 
             'domain': rec.get('domain'),
             'logo': rec.get('logo'),
-            'company_id': company,
+            'company_id': 1,
             'custom_code_head': rec.get('custom_code_head'),
             'theme_id': module.id if module else False,
             'default_lang_id': lang.id if lang else False}
