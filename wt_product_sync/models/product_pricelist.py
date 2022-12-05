@@ -37,7 +37,7 @@ class ProductSync(models.Model):
     _inherit = "product.sync"
 
     def action_product_pricelist_sync(self):
-        count = 0            
+        count = self.pricelist_count
         while True:
             pricelists = self.established_connection('product.pricelist', 'search_read', [['id', '>', count], ['active', 'in', [True, False]]], {'limit': 100, 'order':'id Asc'})
             if pricelists:
@@ -141,14 +141,33 @@ class ProductSync(models.Model):
                     prdt_variant = False
                     if item.get('product_id'):
                         prdt_variant = ProductProduct.search([('db_id', '=', item.get('product_id')[0]), ('store_id', '=', self.id), ('active', 'in', [True, False])])
+                    
+                    category_id = False
+                    if item.get('categ_id'):
+                        category_id = self.get_product_category(item.get('categ_id')).id
+
+                    base_pricelist_id = False
+                    if item.get('base_pricelist_id'):
+                        base_pricelist_id = ProductPricelist.search([('db_id', '=', item.get('base_pricelist_id')[0]), ('store_id', '=', self.id), ('active', 'in', [True, False])]).id
+
                     vals = {'product_tmpl_id': prdt_tmpl.id if prdt_tmpl else False,
                     'product_id': prdt_variant.id if prdt_variant else False,
+                    'categ_id': category_id,
                     'min_quantity': item.get('min_quantity'),
                     'fixed_price': item.get('fixed_price'),
                     'date_start': date_start,
                     'date_end': date_end,
                     'compute_price': item.get('compute_price'),
-                    'applied_on': item.get('applied_on')
+                    'applied_on': item.get('applied_on'),
+                    'percent_price': item.get('percent_price'),
+                    'fixed_price': item.get('fixed_price'),
+                    'base': item.get('base'),
+                    'price_discount': item.get('price_discount'),
+                    'price_round': item.get('price_round'),
+                    'price_min_margin': item.get('price_min_margin'),
+                    'price_max_margin': item.get('price_max_margin'),
+                    'base_pricelist_id': base_pricelist_id,
+                    'price_surcharge': item.get('price_surcharge')
                     }
                     pricelist_item = ProductPricelistItem.search([('pricelist_id', '=', pricelist.id), ('db_id', '=', item.get('id')), ('active', 'in', [True, False])])
                     if pricelist_item:
@@ -184,3 +203,6 @@ class ProductSync(models.Model):
                 pricelist = ProductPricelist.create(vals)
             else:
                 pricelist.write(vals)
+
+            self.pricelist_count = rec.get('id')
+            self._cr.commit()

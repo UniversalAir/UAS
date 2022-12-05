@@ -55,6 +55,7 @@ class ProductSync(models.Model):
 
     count = fields.Integer(default=0)
     bom_count = fields.Integer(default=0)
+    pricelist_count = fields.Integer(default=0)
 
     def display_message(self, message):
         if self._context.get("manual"):

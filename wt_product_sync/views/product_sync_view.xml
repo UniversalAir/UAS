@@ -31,6 +31,7 @@
                     	<field name='username'/>
                     	<field name='password' password="True"/>
                         <field name='last_product_tmpl_import_history' readonly='1'/>
+                        <field name="pricelist_count"/>
                         <!-- <field name='company_id'/> -->
                     </group>
                 </sheet>
