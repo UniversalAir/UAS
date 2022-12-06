@@ -101,15 +101,14 @@
 
 								</a>
 							</div>
-							<!-- <div class="header_woo_search_form">
+
+							<div class="header_woo_search_form">
 							   <div class="dgwt_wcas_search_wrapp">
-									<t t-call="website_sale.search">
-	                                    <t t-set="search" tt-value="False"/>
-	                                    <t t-set="_form_classes" t-valuef="mb-2 mb-lg-0"/>
-	                                    <t t-set="_classes" t-value="'me-sm-2'"/>
-	                                </t>
+							      	<t t-call="website.website_search_box_input">
+							      		<t t-set="search_type" t-valuef="products_only"/>
+							      	</t>
 							   </div>
-							</div> -->
+							</div>
 							<t t-set="website_sale_order" t-value="website.sale_get_order()" />
 							<div class="header-cart">
 							   <a href="/shop/cart" class="header_show_cart_popover" title="View your shopping cart">
@@ -176,17 +175,16 @@
 										</div>
 									</div>
 								</div>
-								<!-- <div class="col-12">
-									<div class="header_woo_search_form">
-									   <div class="dgwt_wcas_search_wrapp">
-											<t t-call="website_sale.search">
-			                                    <t t-set="search" t-value="False"/>
-			                                    <t t-set="_form_classes" t-valuef="mb-2 mb-lg-0"/>
-			                                    <t t-set="_classes" t-value="'me-sm-2'"/>
-			                                </t>
-									   </div>
-									</div>
-								</div> -->
+
+							<div class="header_woo_search_form">
+							   <div class="dgwt_wcas_search_wrapp">
+							      	<t t-call="website.website_search_box_input">
+							      		<t t-set="search_type" t-valuef="products_only"/>
+							      	</t>
+							   </div>
+							</div>
+
+
 							</div>
 						</div>
 					</div>
@@ -204,7 +202,7 @@
 			</t>
 		</xpath>
 		<xpath expr="//div[@id='top_menu_collapse']//t[@t-as='submenu']//t[@t-call='website.submenu']" position="after">
-			<t t-if="submenu_index == 1">
+			<!-- <t t-if="submenu_index == 1"> -->
 				<t t-set="header_cate_ids" t-value="website.get_header_display_categories()"/>
 				<t t-foreach="header_cate_ids" t-as="mhcategory">
 					<li class="nav-item">
@@ -216,7 +214,7 @@
 						</a>
 					</li>
 				</t>
-			</t>
+			<!-- </t> -->
 		</xpath>
 		<xpath expr="//t[@t-call='portal.placeholder_user_sign_in']" position="replace"/>
 		<xpath expr="//t[@t-call='portal.user_dropdown']" position="replace">
