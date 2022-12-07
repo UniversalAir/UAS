@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="footer_custom_univeral_air" inherit_id="website.footer_custom" priority="200">
+		<xpath expr="//footer" position="attributes">
+			<attribute name="t-attf-class"></attribute>
+		</xpath>
+		<xpath expr="//div[@id='footer']" position="replace">
+			<t t-set="no_copyright" t-value="True"/>
+			<div id="footer" class="oe_structure footer-main" t-ignore="true" t-if="not no_footer">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-4 pr-md-5 footer_0001">
+							<div class="et-image mb32">
+								<img class="w-100" height="59" src="/website_universal/static/src/img/header_bg.png" alt="Universal Air"/>
+							</div>
+							<span class="text-wrapper">
+								<span class="text">
+									We work on market over 20 years. We sale only original auto parts and gained confidence of 320k + clients. Buy from Universal Air, join our big community.
+								</span>
+							</span>
+						</div>
+						<div class="col-md-8 footer_0002">
+							<div class="row">
+								<div class="col-md-4 footer_0003">
+									<div class="widget widget_text">
+									   <h2 class="widgettitle">Customer Services</h2>
+									   <div class="textwidget">
+									      <ul>
+									         <li><a href="/contactus">Contact Us</a></li>
+									         <li><a href="/my">Account</a></li>
+									         <li><a href="/privacy-policy">Privacy Policy</a></li>
+									         <li><a href="/delivery-information">Delivery Information</a></li>
+									         <li><a href="/return-refunds">Returns &amp; Refunds</a></li>
+									         <li><a href="/shop">Products</a></li>
+									      </ul>
+									   </div>
+									</div>
+								</div>
+								<div class="col-md-3 footer_0004">
+									<div class="widget widget_text">
+									   <h2 class="widgettitle">Make</h2>
+									   <div class="textwidget">
+									   	 <t t-set="branded_cate_id" t-value="website.get_branded_categories() or []"/>
+									      <ul>
+									      	<t t-if="branded_cate_id">
+										      	<t t-foreach="branded_cate_id.child_id[:6]" t-as="brand_cat_id">
+										         	<li><a t-attf-href="/shop/category/#{slug(brand_cat_id)}">
+										         		<t t-esc="brand_cat_id.name"/>
+										         	</a>
+										         	</li>
+										     	</t>
+									     	</t>
+									      </ul>
+									   </div>
+									</div>
+								</div>
+								<div class="col-md-5 footer_0005">
+									<div class="widget widget_text">
+									   <h2 class="widgettitle">CONTACTS</h2>
+									   <div class="textwidget">
+									      <ul>
+									         <li>
+									         	<a href="mailto:sales@universalair.com">
+									         		<i class="fa fa-envelope-o"/>sales@universalair.com
+									         	</a>
+									         </li>
+									         <li>
+									         	<a href="tel:+8008642470" title="Phone">
+									         		<i class="fa fa-phone"/>800-864-2470 or 909-886-9491 
+									         	</a>
+									         </li>
+									         <li>
+									         	<a href="#" title="FAX">
+									         		<i class="fa fa-fax"/>909-495-1350 
+									         	</a>
+									         </li>
+									         <li>
+									         	<a href="#">
+									         		<i class="fa fa-clock-o"/>Mon. - Fri. 09:00 am - 06:00 pm PST
+									         	</a>
+									         </li>
+									         
+									      </ul>
+									   </div>
+									</div>
+									<div class="et-social-links styling-original-true shadow-true pt16">
+										<a t-if="website.social_youtube" class="ien-youtube"  t-att-href="website.social_youtube" target="_self"></a>
+										<a t-if="website.social_linkedin" t-att-href="website.social_linkedin" class="ien-linkedin" target="_self"></a>
+										<a t-if="website.social_facebook" t-att-href="website.social_facebook" class="ien-facebook" target="_self"></a>
+										<a t-if="website.social_instagram" t-att-href="website.social_instagram" class="ien-instagram" target="_self"></a>
+										<a t-if="website.social_twitter" t-att-href="website.social_twitter" class="ien-twitter" target="_self"></a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="bottom_footer_main">
+				<div class="container">
+					<div class="col-sm-12">
+						<span> 
+							© Copyright 2021 Universal Air. All Rights Reserved
+						</span>
+					</div>
+				</div>
+			</div>
+		</xpath>
+	</template>
+</odoo>

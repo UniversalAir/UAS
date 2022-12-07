@@ -33,7 +33,8 @@
         "views/product_quick_view.xml",
         "views/shop_product.xml",
         "views/cart.xml",
-        ],
+        "views/footer.xml",
+    ],
     'assets': {
         'web.assets_frontend': [
             "website_universal/static/src/scss/custom.scss",

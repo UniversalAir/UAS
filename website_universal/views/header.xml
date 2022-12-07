@@ -93,7 +93,7 @@
 							<div class="header-logo">
 								<a href="/" title="Universal Air">
 									<t t-if="website.logo">
-										<span t-field="website.logo" t-options="{'widget': 'image', 'style': 'width: 250px; ,height: 26px;'}" role="img" t-att-aria-label="'Logo of %s' % website.name" t-att-title="website.name" />
+										<span t-field="website.logo" t-options="{'widget': 'image', 'style': ' height: 36px; ,max-width: 350px;'}" role="img" t-att-aria-label="'Logo of %s' % website.name" t-att-title="website.name" />
 									</t>
 									<t t-if="not website.logo">
 										<img class="logo" src="/website_universal/static/src/img/header_bg.png" alt="Universal Air"/>
@@ -245,17 +245,17 @@
 					<div class="megamenu_my_vehicale blocked--link">
 						<form action="#" method="post" class="blocked--link">
 							<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
-							<t t-set="max_cate_ids" t-value="website.get_branded_categories() or []"/>
+							<t t-set="max_cate_id" t-value="website.get_branded_categories() or []"/>
 							<div class="form-group blocked--link">
 								<select class="form-control blocked--link" id="car_make" name="car_make">
 								 	<option selected="selected" value="">Make</option>
-								  	<t t-foreach="max_cate_ids" t-as="max_cate_id">
+								 	<t t-if="max_cate_id">
 									  	<t t-foreach="max_cate_id.child_id.sorted(lambda x: x.name)" t-as="mcate_id">
 											<option t-att-value="mcate_id.id">
 												<t t-esc="mcate_id.name"/>
 											</option>
-									 	 </t>
-									</t>
+									 	</t>
+								 	</t>
 								</select>
 							</div>
 							<div class="form-group blocked--link">

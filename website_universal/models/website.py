@@ -15,7 +15,7 @@ class Website(models.Model):
 		return cate_ids
 
 	def get_branded_categories(self):
-		cate_ids = self.env['product.public.category'].search([('is_branded', '=', True)])
+		cate_ids = self.env['product.public.category'].search([('is_branded', '=', True)],limit=1)
 		return cate_ids
 
 	def get_is_new_arrival(self):

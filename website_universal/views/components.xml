@@ -23,4 +23,125 @@
 		  </div>
 		</xpath>
 	</template>
+
+	<template id="product_templ_inherit" inherit_id="website_sale.product" priority="300">
+		<xpath expr="//section[@id='product_detail']//div[hasclass('row')][1]" position="replace">
+			<section class="breadcrumb-section">
+				   <div class="container">
+					  <nav class="content--breadcrumb block">
+						 <ul class="breadcrumb--list">
+							<li role="menuitem" class="breadcrumb--entry">
+							   <a class="breadcrumb--link" href="/" title="Home" itemprop="item">
+								  <link itemprop="url" href="/"/>
+								  <span class="breadcrumb--title" itemprop="name">Home</span> 
+							   </a>
+							</li>
+							<li class="breadcrumb--separator"> <i class="fa fa-angle-right"></i> </li>
+							<li role="menuitem" class="breadcrumb--entry">
+							   <a class="breadcrumb--link" href="/shop" title="Shop" itemprop="item">
+								  <link itemprop="url" href="/shop"/>
+								  <span class="breadcrumb--title" itemprop="name">shop</span> 
+							   </a>
+							</li>
+							<li class="breadcrumb--separator"> <i class="fa fa-angle-right"></i> </li>
+							<t t-if="category">
+								<t t-if="website.get_category_breadcum(category)">
+									<t t-set="categ_bread" t-value="website.get_category_breadcum(category)" />
+									<t t-foreach="categ_bread" t-as="categ">
+										<li class="breadcrumb--separator"> <i class="fa fa-angle-right"></i> </li>
+										<li role="menuitem" class="breadcrumb--entry is--active">
+										   <a class="breadcrumb--link" t-att-href="keep('/shop/category/%s' % slug(categ), category=0)" t-att-title="categ.name">
+											  <link itemprop="url" t-att-href="keep('/shop/category/%s' % slug(categ), category=0)"/>
+											  <span class="breadcrumb--title" t-field="categ.name"/>
+										   </a>
+										</li>
+									</t>
+								</t>
+								<li class="breadcrumb--separator"> <i class="fa fa-angle-right"></i> </li>
+							</t>
+							<li role="menuitem" class="breadcrumb--entry" t-if="product">
+								   <a class="breadcrumb--link" href="#" t-att-title="product.name" itemprop="item">
+									  <span class="breadcrumb--title" itemprop="name" t-field="product.name"/>
+								   </a>
+							</li>
+						 </ul>
+					  </nav>
+				   </div>
+			</section>
+		</xpath>
+		<xpath expr="//div[@id='product_full_description']" position="replace"/>
+		<xpath expr="//section[@id='product_detail']" position="after">
+			<t t-set="p_reviwes" t-value="product.sudo().rating_get_stats()"/>
+			<div class="container">
+				<div class="row">
+					<div class="col-12">
+						<t t-set="categories" t-value="product.valid_product_template_attribute_line_ids._prepare_categories_for_display()"/>
+						<div class="description_info_tabs">
+							<ul class="tabs wc-tabs" role="tablist">
+							   <li class="description_tab active" id="tab-title-description" role="tab" aria-controls="tab-description">
+								  <a href="#">
+								  Description					</a>
+							   </li>
+							   <li class="additional_information_tab" id="tab-title-additional_information" role="tab" aria-controls="tab-additional_information" t-if="len(categories)> 0">
+								  <a href="#">
+								  Specifications					</a>
+							   </li>
+							   <li class="reviews_tab" id="tab-title-reviews" role="tab" aria-controls="tab-reviews">
+
+								  <a href="#">
+								  Reviews <span style="font-family: monospace;">(<t t-esc="p_reviwes.get('total')"/>)</span>					</a>
+							   </li>
+							</ul>
+							<div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--description panel entry-content wc-tab" id="tab-description" role="tabpanel" aria-labelledby="tab-title-description" style="">
+								<div itemprop="description" t-field="product.website_description" class="oe_structure"/>
+							</div>
+							<div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--description panel entry-content wc-tab" id="tab-additional_information" role="tabpanel" aria-labelledby="tab-title-description" style="display:none" t-if="len(categories)> 0">
+								<table class="shop_attributes_table_cl">
+									<tbody>
+									  <t t-foreach="categories" t-as="category">
+										<tr class="woocommerce-product-attributes-item woocommerce-product-attributes-item--attribute_pa_brand" t-foreach="categories[category].filtered(lambda l: len(l.value_ids) > 1)" t-as="ptal">
+											<th class="woocommerce-product-attributes-item__label" t-field="ptal.attribute_id.name"/>
+											<td class="woocommerce-product-attributes-item__value">
+												<p>
+													<t t-foreach="ptal.value_ids" t-as="pav">
+														<span t-field="pav.name"/><t t-if="not pav_last"> , </t>
+													</t>
+												</p>
+											</td>
+										</tr>
+										<t t-set="single_value_attributes" t-value="categories[category]._prepare_single_value_for_display()"/>
+										<tr class="woocommerce-product-attributes-item woocommerce-product-attributes-item--attribute_pa_brand" t-foreach="single_value_attributes" t-as="attribute">
+											<th class="woocommerce-product-attributes-item__label" t-field="attribute.name"/>
+											<td class="woocommerce-product-attributes-item__value">
+												<p>
+													<t t-foreach="single_value_attributes[attribute]" t-as="ptal">
+														<span t-field="ptal.product_template_value_ids._only_active().name"/><t t-if="not ptal_last"> , </t>
+													</t>
+												</p>
+											</td>
+										</tr>
+									  </t>
+									</tbody>
+								</table>
+							</div>
+							<div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--description panel entry-content wc-tab" id="tab-reviews" role="tabpanel" aria-labelledby="tab-title-description" style="display:none">
+								<div class="o_shop_discussion_rating">
+									<section class="container mt16 mb16">
+										<div class="row">
+											<div class="col-lg-8 offset-lg-2">
+												<t t-call="portal.message_thread">
+													<t t-set="object" t-value="product"/>
+													<t t-set="display_rating" t-value="True"/>
+												</t>
+											</div>
+										</div>
+									</section>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</xpath>
+	</template>
 </odoo>
