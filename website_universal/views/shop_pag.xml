@@ -122,6 +122,7 @@
 		  	</xpath>
 		  <!-- products -->
 		  <xpath expr="//div[hasclass('o_wsale_products_grid_table_wrapper')]" position="replace">
+		  		
 				<div t-cache="pricelist,products" t-if="products" class="product_items_block_main mt32 mb32 o_wsale_products_grid_table_wrapper" t-att-data-default-sort="website.shop_default_sort" t-att-data-name="grid_block_name">
 					<t t-foreach="bins" t-as="tr_product">
 						<t t-foreach="tr_product" t-as="td_product">

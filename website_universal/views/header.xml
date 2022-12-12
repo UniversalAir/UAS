@@ -106,6 +106,7 @@
 							   <div class="dgwt_wcas_search_wrapp">
 							      	<t t-call="website.website_search_box_input">
 							      		<t t-set="search_type" t-valuef="products_only"/>
+							      		 <t t-set="action" t-value="'/shop'"/>
 							      	</t>
 							   </div>
 							</div>
@@ -175,16 +176,6 @@
 										</div>
 									</div>
 								</div>
-
-							<div class="header_woo_search_form">
-							   <div class="dgwt_wcas_search_wrapp">
-							      	<t t-call="website.website_search_box_input">
-							      		<t t-set="search_type" t-valuef="products_only"/>
-							      	</t>
-							   </div>
-							</div>
-
-
 							</div>
 						</div>
 					</div>
