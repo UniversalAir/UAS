@@ -104,10 +104,10 @@
 
 							<div class="header_woo_search_form">
 							   <div class="dgwt_wcas_search_wrapp">
-							      	<t t-call="website.website_search_box_input">
-							      		<t t-set="search_type" t-valuef="products_only"/>
-							      		 <t t-set="action" t-value="'/shop'"/>
-							      	</t>
+									<t t-call="website.website_search_box_input">
+										<t t-set="search_type" t-valuef="products_only"/>
+										 <t t-set="action" t-value="'/shop'"/>
+									</t>
 							   </div>
 							</div>
 							<t t-set="website_sale_order" t-value="website.sale_get_order()" />
@@ -176,6 +176,16 @@
 										</div>
 									</div>
 								</div>
+								<div class="col-12">
+									<div class="header_woo_search_form">
+										<div class="dgwt_wcas_search_wrapp">
+											<t t-call="website.website_search_box_input">
+												<t t-set="search_type" t-valuef="products_only"/>
+												<t t-set="action" t-value="'/shop'"/>
+											</t>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -207,6 +217,13 @@
 				</t>
 			<!-- </t> -->
 		</xpath>
+		<xpath expr="//t[@t-call='website.navbar_toggler']" position="replace"/>
+		<xpath expr="//div[@id='top_menu_collapse']" position="after">
+			<t t-call="website.navbar_toggler">
+				<t t-set="_toggler_class" t-valuef="my-3"/>
+			</t>
+		</xpath>
+
 		<xpath expr="//t[@t-call='portal.placeholder_user_sign_in']" position="replace"/>
 		<xpath expr="//t[@t-call='portal.user_dropdown']" position="replace">
 			<t t-set="is_connected" t-value="not user_id._is_public()"/>
@@ -239,14 +256,14 @@
 							<t t-set="max_cate_id" t-value="website.get_branded_categories() or []"/>
 							<div class="form-group blocked--link">
 								<select class="form-control blocked--link" id="car_make" name="car_make">
-								 	<option selected="selected" value="">Make</option>
-								 	<t t-if="max_cate_id">
-									  	<t t-foreach="max_cate_id.child_id.sorted(lambda x: x.name)" t-as="mcate_id">
+									<option selected="selected" value="">Make</option>
+									<t t-if="max_cate_id">
+										<t t-foreach="max_cate_id.child_id.sorted(lambda x: x.name)" t-as="mcate_id">
 											<option t-att-value="mcate_id.id">
 												<t t-esc="mcate_id.name"/>
 											</option>
-									 	</t>
-								 	</t>
+										</t>
+									</t>
 								</select>
 							</div>
 							<div class="form-group blocked--link">

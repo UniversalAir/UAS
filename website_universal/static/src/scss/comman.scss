@@ -242,7 +242,7 @@ header#top{
                         box-shadow: none;
                     }
                 }
-                .dropdown-menu.show{
+                .o_dropdown_menu.show{
                     .text-primary{
                         color: #0a2239 !important;
                         &:hover{
@@ -252,7 +252,7 @@ header#top{
                             outline: none !important;
                         }
                     }
-                    .o_search_product_item p{
+                    .o_search_result_item p{
                         font-size: 13px;
                         font-family: 'Montserrat';
                         color: dimgray;
