@@ -43,7 +43,7 @@
 								  <span class="breadcrumb--title" itemprop="name">shop</span> 
 							   </a>
 							</li>
-							<li class="breadcrumb--separator"> <i class="fa fa-angle-right"></i> </li>
+							
 							<t t-if="category">
 								<t t-if="website.get_category_breadcum(category)">
 									<t t-set="categ_bread" t-value="website.get_category_breadcum(category)" />
@@ -142,6 +142,13 @@
 					</div>
 				</div>
 			</div>
+		</xpath>
+	</template>
+
+
+	<template id="checkout" inherit_id="website_sale.checkout">
+		<xpath expr="//div[@id='wrap']//t[@t-if='not only_services']" position="attributes">
+			<attribute name="t-if">not only_services and user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.is_wholesale_pricelist</attribute>
 		</xpath>
 	</template>
 </odoo>
