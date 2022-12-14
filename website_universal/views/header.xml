@@ -258,7 +258,8 @@
 								<select class="form-control blocked--link" id="car_make" name="car_make">
 									<option selected="selected" value="">Make</option>
 									<t t-if="max_cate_id">
-										<t t-foreach="max_cate_id.child_id.sorted(lambda x: x.name)" t-as="mcate_id">
+										<t t-set="categoris" t-value="request.env['product.public.category'].search([('parent_id','=',max_cate_id.id)], order='name asc')"/>
+										<t t-foreach="categoris.sorted(lambda x: x.name)" t-as="mcate_id">
 											<option t-att-value="mcate_id.id">
 												<t t-esc="mcate_id.name"/>
 											</option>

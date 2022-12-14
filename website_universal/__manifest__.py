@@ -53,7 +53,7 @@
             "website_universal/static/src/js/core/mixins.js",
             "website_universal/static/src/js/QuickView.js",
             "website_universal/static/src/js/slider.js",
-            "/website_universal/static/src/lib/js/owl.carousel.min.js"
+            "/website_universal/static/src/lib/js/owl.carousel.min.js",
             
         ],
         'web.assets_common':[
