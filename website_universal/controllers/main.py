@@ -198,3 +198,22 @@ class WebsiteSaleCustom(WebsiteSale):
 		if res:
 			return res
 		return ''
+
+	@http.route('/product/price', type='json', auth='public', website=True)
+	def get_quick_view_html(self, **kwargs):
+		result = {}
+		if kwargs.get('mtAttrs'):
+			attribute_str = kwargs.get('mtAttrs')
+			if attribute_str:
+				attribute_list_str = list(attribute_str.split(","))
+				attribute_list = list(map(int, attribute_list_str))
+				product = int(kwargs.get('product_id'))
+				quantity = int(kwargs.get('add_qty'))
+				otherpricelist = request.website.get_other_pricelist()
+				if attribute_list and otherpricelist and product:
+					product_id = request.env['product.template'].sudo().browse(product)
+					attribute_ids = request.env['product.template.attribute.value'].sudo().search([('id','in',attribute_list)])
+					otherpricelist = request.website.get_other_pricelist()
+					combination = product_id._get_combination_info(attribute_ids, add_qty=quantity or 1, pricelist=otherpricelist)
+					result['price'] = float(combination.get('price'))
+		return result	
