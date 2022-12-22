@@ -102,6 +102,7 @@ var _t = core._t;
 		selector: '.description_info_tabs',
 		events:{
 			'click .tabs > li > a': "on_click_tabs_toggle",
+			'click .card-header-tabs > li > a': "on_click_nav_toggle",
 		},
         init: function () {
         	this._super.apply(this, arguments);
@@ -115,6 +116,14 @@ var _t = core._t;
         	var tabid = $(event.target).parent().attr('aria-controls');
         	$(event.target).parent().addClass('active');
         	this.$el.find(".woocommerce-Tabs-panel[id='"+tabid+"']").css('display', 'block');
-        }
+        },
+        on_click_nav_toggle: function(ev){
+        	this.$el.find('.card-header-tabs > li > a').removeClass('active');
+        	this.$el.find('.tab-pane').css('display','none');
+        	var tabid = $(event.target).attr('aria-controls');
+        	$(event.target).addClass('active');
+        	this.$el.find(".tab-pane[id='"+tabid+"']").css('display', 'contents');
+        },
+         
 	});
 });
