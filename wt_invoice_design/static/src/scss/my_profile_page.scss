@@ -1,0 +1,73 @@
+@media only screen and (min-width: 100px) {
+	.navigation{
+		margin-top: 10px;
+		position: relative;
+		width: 100%;
+		height: 100px;
+		background: #B0CFDE;
+		display: flex;
+		border-radius: 10px;
+		.imag{
+			display: block;
+			margin-top: 30px;
+			justify-content: center;
+			border-radius: 50%;
+			border: 5px solid #F0F0F0;
+			widhth: 100px;
+			height: 100px;
+			margin-left: auto;
+  			margin-right: auto;
+		}
+	}
+}
+	
+.card_myprofile{
+	border-color: #BEBEBE;
+	margin: 0px;
+	margin-top: 40px;
+	border-radius: 10px;
+	width:100%;
+	.lenght{
+		padding-left: 40px;
+		padding-top: 40px;
+		padding-bottom: 15px;
+	}
+	@media only (min-width: 768px) {
+		.row_address{
+			width: 100%;
+		}
+	}
+	@media only (min-width: 768px) {
+		.set{
+			margin-left: 40px;
+		}
+	}
+	@media only (max-width: 767px) {
+		.set{
+			margin-left: 20px;
+		}
+	}
+	@media only (min-width: 768px) {
+		.set_address{
+			margin-left: 40px;
+			margin-right: 14px;
+		}
+	}
+	@media only (max-width: 767px) {
+		.set_address{
+			margin-left: 20px;
+
+		}
+	}
+	@media only (min-width: 767px) {
+		.one_line{
+			width: 20%;
+			padding: 0px;
+		}
+	}
+}
+.butn{
+	margin-right: 60px;
+	border-radius: 10px;
+	background-image: linear-gradient(to right,	#4169E1 35%, #4169E1 100%);
+}
